@@ -1,0 +1,38 @@
+node_modules
+
+# Output
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
+/build
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env (gizli degerler ASLA commit edilmez)
+.env
+.env.*
+!.env.example
+!.env.test
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Paraglide (vite plugin uretiyor)
+src/lib/paraglide
+project.inlang/cache/
+
+# Yerel Claude Code / IDE / araç ayarlari
+.mcp.json
+.claude
+.cursor
+.idea
+.vscode
+
+# Editor backup'lari
+*.swp
+*~

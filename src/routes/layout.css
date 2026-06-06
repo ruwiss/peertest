@@ -1,0 +1,106 @@
+@import 'tailwindcss';
+
+/* Sinif tabanli karanlik mod: <html class="dark"> ile devreye girer (sistem degil, manuel kontrol). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Telegram marka rengi (tg-500 = resmi telegram mavisi #2AABEE). */
+@theme {
+	--color-tg-50: #e6f6fd;
+	--color-tg-100: #c1e9fa;
+	--color-tg-200: #98dbf6;
+	--color-tg-300: #6ecbf3;
+	--color-tg-400: #4abdef;
+	--color-tg-500: #2aabee;
+	--color-tg-600: #1c95d4;
+	--color-tg-700: #1782b9;
+	--color-tg-800: #126e9d;
+	--color-tg-900: #0d5a82;
+}
+
+:root {
+	color-scheme: light;
+}
+:root.dark {
+	color-scheme: dark;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+/* Masaustunde sabit %110 zoom: kullanicinin tercih ettigi okuma boyutu. */
+/* Mobilde 100% kalir; ekran zaten kucuk, ekstra zoom tasmaya yol acar. */
+@media (min-width: 768px) {
+	:root {
+		zoom: 1.1;
+	}
+}
+
+body {
+	@apply bg-zinc-50 text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100;
+	font-family:
+		'Inter',
+		ui-sans-serif,
+		system-ui,
+		-apple-system,
+		'Segoe UI',
+		sans-serif;
+	/* Mevcut bg-rengi UZERINE iki kat layered desen: */
+	/* 1) Kucuk nokta izgara (zar zor gorunur)  */
+	/* 2) Cok genis radial brand glow (sayfaya derinlik katar) */
+	background-image:
+		radial-gradient(circle at 50% -10%, rgba(42, 171, 238, 0.10), transparent 55%),
+		radial-gradient(circle at 1px 1px, rgba(24, 24, 27, 0.09) 1px, transparent 0);
+	background-size:
+		auto,
+		22px 22px;
+	background-attachment: fixed;
+	background-repeat: no-repeat, repeat;
+}
+:root.dark body {
+	background-image:
+		radial-gradient(circle at 50% -10%, rgba(42, 171, 238, 0.12), transparent 55%),
+		radial-gradient(circle at 1px 1px, rgba(244, 244, 245, 0.10) 1px, transparent 0);
+}
+
+/* Erisilebilir, marka renginde odak halkasi - sadece buton/link/tabindex elementleri. */
+:where(a, button, [tabindex]):focus-visible {
+	@apply ring-2 ring-tg-500 ring-offset-2 ring-offset-zinc-50 outline-none dark:ring-offset-zinc-950;
+}
+
+/* Inputlar/textarea/select: ince border-color degisimi + yumusak halo (offset yok, gap olmaz). */
+/* :where() yerine direkt selektor: global focus-visible kuralini geride birakir. */
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+select:focus,
+select:focus-visible {
+	outline: none;
+	border-color: var(--color-tg-500);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-tg-500) 22%, transparent);
+}
+
+/* Search input'larda webkit'in default ic clear/decoration'larini kaldir. */
+input[type='search'] {
+	-webkit-appearance: none;
+	appearance: none;
+}
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-decoration {
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+/* Tum resimler ilk gorunduklerinde fade-in ile yumusak gelir. */
+img {
+	animation: img-fade-in 0.35s ease-out both;
+}
+@keyframes img-fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
