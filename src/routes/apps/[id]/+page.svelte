@@ -19,15 +19,10 @@
 
 	const canJoin = $derived(
 		data.loggedIn &&
-			data.botStarted &&
 			!data.access.isOwner &&
 			data.access.joinedStatus === null &&
 			data.app.status === 'active' &&
 			data.app.free > 0
-	);
-	// Giris yapmis ama bot baglanmamis: bilgilendirme banner'i + butonu yonlendir.
-	const needsBot = $derived(
-		data.loggedIn && !data.botStarted && !data.access.isOwner && data.access.joinedStatus === null
 	);
 
 	let joining = $state(false);
@@ -228,13 +223,6 @@
 					class="rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white hover:bg-tg-500"
 				>
 					{m.login()}
-				</a>
-			{:else if needsBot}
-				<a
-					href="/connect-bot?redirectTo={encodeURIComponent(`/apps/${data.app.id}`)}"
-					class="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600"
-				>
-					{m.app_connect_bot_first()}
 				</a>
 			{:else if canJoin}
 				<button
