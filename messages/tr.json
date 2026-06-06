@@ -447,6 +447,9 @@
 	"notif_open_checkpoints_body": "Kanıtını yükle, taahhüdün ilerlesin.",
 	"notif_incoming_trades": "{count} trade isteği",
 	"notif_incoming_trades_body": "Başka kullanıcı sana takas teklif etti. Detaya bak.",
+	"keep_installed_title": "Test tamamlandı, teşekkürler!",
+	"keep_installed_body": "Bu uygulamaya katılan son tester biraz geç katıldı. Geliştiricinin Play Store kapalı test sürecini tamamlayabilmesi için, lütfen uygulamayı henüz silmeyin — yaklaşık {days} gün daha tutmanız çok yardımcı olur. Anlayışınız için teşekkürler!",
+	"keep_installed_ok": "Anladım",
 
 	"app_connect_bot_first": "Önce botu bağla",
 	"connect_bot_mandatory_title": "Bot bağlantısı zorunlu",

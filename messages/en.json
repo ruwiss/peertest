@@ -447,6 +447,9 @@
 	"notif_open_checkpoints_body": "Upload your proof to keep the commitment going.",
 	"notif_incoming_trades": "{count} trade request(s)",
 	"notif_incoming_trades_body": "Someone proposed a trade with you. Tap to view.",
+	"keep_installed_title": "Test complete, thank you!",
+	"keep_installed_body": "The latest tester on this app joined a bit late. To help the developer finish their Google Play closed test, please don't delete the app yet — keeping it for about {days} more days would mean a lot. Thanks for your patience!",
+	"keep_installed_ok": "Got it",
 
 	"app_connect_bot_first": "Connect the bot first",
 	"connect_bot_mandatory_title": "Bot connection is required",

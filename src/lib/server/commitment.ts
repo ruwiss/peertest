@@ -1,4 +1,4 @@
-import { and, count, desc, eq, inArray, sql } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, ne, sql } from 'drizzle-orm';
 import { db } from './db';
 import { txDb } from './db/pool';
 import { apps, checkpoints, commitments, users } from './db/schema';
@@ -247,14 +247,50 @@ export async function cancelCommitment(userId: string, commitmentId: string): Pr
 }
 
 /**
+ * Bu app'in BENDEN BASKA en son katilan aktif tester'i son 7 gun icinde katildiysa,
+ * uygulamayi silmeden once kac gun daha tutmasi gerektigini doner; aksi halde null.
+ * Amac: Play Store kapali test'in "kesintisiz 14 gun 12 tester" kuralinda son katilanin
+ * 14 gun penceresi tamamlanana kadar bu tester'in da app'i silmemesini rica etmek.
+ */
+async function computeKeepInstalledHint(
+	testerId: string,
+	appId: string
+): Promise<number | null> {
+	const rows = await db
+		.select({ startedAt: commitments.startedAt })
+		.from(commitments)
+		.where(
+			and(
+				eq(commitments.appId, appId),
+				eq(commitments.status, 'active'),
+				ne(commitments.testerId, testerId)
+			)
+		)
+		.orderBy(desc(commitments.startedAt))
+		.limit(1);
+	if (rows.length === 0) return null;
+	const daysSinceLatest = (Date.now() - rows[0].startedAt.getTime()) / 86_400_000;
+	if (daysSinceLatest > 7) return null;
+	const remaining = Math.ceil(14 - daysSinceLatest);
+	return remaining > 0 ? remaining : null;
+}
+
+/**
  * Checkpoint kaniti yukleme. Pencere acik + pending olmali. Son checkpoint
  * (completed) submit olunca commitment tamamlanir, skor odulu + unfreeze + bildirim.
+ * Donus: { completed, keepInstalledDays } - son checkpoint ise client'a "uygulamayi
+ * silmeyin X gun" uyarisi gostermek icin kullanilir (keepInstalledDays null = uyari yok).
  */
+export interface SubmitResult {
+	completed: boolean;
+	keepInstalledDays: number | null;
+}
+
 export async function submitCheckpoint(
 	testerId: string,
 	checkpointId: string,
 	screenshots: { url: string; shareUrl: string }[]
-): Promise<void> {
+): Promise<SubmitResult> {
 	if (!screenshots.length) throw new Error('En az bir ekran görüntüsü gerekli.');
 
 	const rows = await db
@@ -281,6 +317,7 @@ export async function submitCheckpoint(
 		.where(eq(checkpoints.id, checkpointId));
 
 	// Son checkpoint -> taahhut tamamlandi.
+	let keepInstalledDays: number | null = null;
 	if (checkpoint.kind === 'completed') {
 		await db
 			.update(commitments)
@@ -297,7 +334,13 @@ export async function submitCheckpoint(
 
 		await notifyOwnerCompleted(commitment.appId, testerId);
 		await unfreezeIfClear(testerId);
+
+		// "Lutfen X gun daha silmeyin" ipucu - sonradan katilanin Play Store
+		// 14 gun penceresinin tamamlanmasi icin.
+		keepInstalledDays = await computeKeepInstalledHint(testerId, commitment.appId);
 	}
+
+	return { completed: checkpoint.kind === 'completed', keepInstalledDays };
 }
 
 /** Kullanicinin aktif (status='active') taahhudu kalmadiysa frozen app'lerini acar. */

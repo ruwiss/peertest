@@ -22,6 +22,8 @@
 	let now = $state(new Date());
 	let actionError = $state<string | null>(null);
 	let uploadCtx = $state<{ commitmentId: string; cp: MyCheckpoint } | null>(null);
+	// Son checkpoint sonrasi "lutfen X gun silme" uyarisi.
+	let keepInstalledHint = $state<number | null>(null);
 
 	// Canli geri sayim icin dakikada bir guncelle. Onmount'ta hemen bir kez de senkronize et —
 	// SSR ile aradan zaman gecmis olabilir; "0 saniye" gorunmesini boylece engelleriz.
@@ -55,7 +57,14 @@
 				const b = await res.json().catch(() => ({}));
 				throw new Error(b.message ?? m.upload_failed());
 			}
+			const body: { completed?: boolean; keepInstalledDays?: number | null } = await res
+				.json()
+				.catch(() => ({}));
 			uploadCtx = null;
+			// Son checkpoint ise + sonradan katilan bir tester varsa kibar bir uyari goster.
+			if (body.completed && body.keepInstalledDays && body.keepInstalledDays > 0) {
+				keepInstalledHint = body.keepInstalledDays;
+			}
 			await invalidateAll();
 		} catch (e) {
 			actionError = (e as Error).message;
@@ -250,4 +259,40 @@
 		onuploaded={onUploaded}
 		onclose={() => (uploadCtx = null)}
 	/>
+{/if}
+
+<!-- Son checkpoint sonrasi "lutfen X gun silme" modali -->
+{#if keepInstalledHint !== null}
+	<div
+		class="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4"
+		role="presentation"
+		onclick={(e) => {
+			if (e.target === e.currentTarget) keepInstalledHint = null;
+		}}
+	>
+		<div
+			class="w-full max-w-md rounded-t-2xl border border-zinc-200 bg-white p-6 sm:rounded-xl dark:border-zinc-800 dark:bg-zinc-900"
+		>
+			<div class="mb-3 inline-flex size-12 items-center justify-center rounded-2xl bg-tg-50 text-tg-700 dark:bg-tg-500/15 dark:text-tg-300">
+				<svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+				</svg>
+			</div>
+			<h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+				{m.keep_installed_title()}
+			</h2>
+			<p class="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+				{m.keep_installed_body({ days: keepInstalledHint })}
+			</p>
+			<div class="mt-5 flex justify-end">
+				<button
+					type="button"
+					onclick={() => (keepInstalledHint = null)}
+					class="rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white hover:bg-tg-500"
+				>
+					{m.keep_installed_ok()}
+				</button>
+			</div>
+		</div>
+	</div>
 {/if}

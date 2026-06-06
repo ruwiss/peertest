@@ -14,8 +14,8 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
 		error(400, 'checkpointId ve screenshots gerekli.');
 	}
 	try {
-		await submitCheckpoint(locals.user.id, body.checkpointId, body.screenshots);
-		return json({ ok: true });
+		const result = await submitCheckpoint(locals.user.id, body.checkpointId, body.screenshots);
+		return json({ ok: true, ...result });
 	} catch (e) {
 		error(400, (e as Error).message);
 	}
