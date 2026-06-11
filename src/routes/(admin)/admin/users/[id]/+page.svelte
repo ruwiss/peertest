@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import * as m from '$lib/paraglide/messages';
 	import { getLocale } from '$lib/paraglide/runtime';
 	import BackLink from '$lib/components/BackLink.svelte';
@@ -6,10 +7,23 @@
 	import SlotPips from '$lib/components/SlotPips.svelte';
 	import { appStatusTone, commitmentStatusTone } from '$lib/utils/status';
 	import { appSlug } from '$lib/utils/slug';
-	import type { PageData } from './$types';
+	import type { PageData, ActionData } from './$types';
 
-	let { data }: { data: PageData } = $props();
+	let { data, form }: { data: PageData; form: ActionData } = $props();
 	const d = $derived(data.detail);
+
+	const errMsg = $derived(
+		form && typeof form === 'object' && 'message' in form ? form.message : null
+	);
+	// Basarili duyuru gonderiminin ozeti (sent/total) — bant olarak gosterilir.
+	const broadcastResult = $derived(
+		form && typeof form === 'object' && 'broadcast' in form
+			? (form.broadcast as { sent: number; total: number })
+			: null
+	);
+	// "Aksiyonlar" menusu + duyuru modali acik mi.
+	let actionsOpen = $state(false);
+	let showBroadcast = $state(false);
 
 	const appStatusLabel: Record<string, () => string> = {
 		active: m.app_status_active,
@@ -37,23 +51,95 @@
 </svelte:head>
 
 <section class="mx-auto max-w-5xl px-4 py-8">
-	<div class="mb-4">
+	<div class="mb-4 flex items-center justify-between gap-3">
 		<BackLink href="/admin" label={m.admin_user_back()} />
+
+		<!-- Admin aksiyon menusu (su an: tum kullanicilara duyuru) -->
+		<div class="relative">
+			<button
+				type="button"
+				onclick={() => (actionsOpen = !actionsOpen)}
+				class="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+			>
+				{m.admin_actions_btn()}
+				<svg class="size-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+					<path
+						fill-rule="evenodd"
+						d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+						clip-rule="evenodd"
+					/>
+				</svg>
+			</button>
+
+			{#if actionsOpen}
+				<!-- Disari tiklayinca menuyu kapatan saydam katman -->
+				<button
+					type="button"
+					class="fixed inset-0 z-10 cursor-default"
+					aria-label="close"
+					onclick={() => (actionsOpen = false)}
+				></button>
+				<div
+					class="absolute right-0 z-20 mt-1 w-60 overflow-hidden rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-800 dark:bg-zinc-900"
+				>
+					<button
+						type="button"
+						onclick={() => {
+							actionsOpen = false;
+							showBroadcast = true;
+						}}
+						class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-800"
+					>
+						<svg class="size-4 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+							<path
+								d="M3.105 2.289a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.085l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.289Z"
+							/>
+						</svg>
+						{m.admin_broadcast_btn()}
+					</button>
+				</div>
+			{/if}
+		</div>
 	</div>
 
-	<div class="mb-6 flex items-center gap-4 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+	{#if broadcastResult}
+		<p
+			class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300"
+		>
+			{m.admin_broadcast_sent({ sent: broadcastResult.sent, total: broadcastResult.total })}
+		</p>
+	{/if}
+
+	{#if errMsg}
+		<p
+			class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300"
+		>
+			{m.admin_action_failed({ message: errMsg })}
+		</p>
+	{/if}
+
+	<div
+		class="mb-6 flex items-center gap-4 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900"
+	>
 		{#if d.user.avatarUrl}
 			<img src={d.user.avatarUrl} alt="" class="size-14 rounded-full object-cover" />
 		{:else}
-			<div class="flex size-14 items-center justify-center rounded-full bg-zinc-100 text-lg font-semibold text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
+			<div
+				class="flex size-14 items-center justify-center rounded-full bg-zinc-100 text-lg font-semibold text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
+			>
 				{d.user.firstName.charAt(0)}
 			</div>
 		{/if}
 		<div class="min-w-0 flex-1">
 			<div class="flex items-center gap-2">
-				<h1 class="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">{d.user.firstName}</h1>
+				<h1 class="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+					{d.user.firstName}
+				</h1>
 				{#if d.user.role === 'admin'}
-					<span class="rounded-md bg-tg-50 px-2 py-0.5 text-xs font-medium text-tg-700 dark:bg-tg-500/10 dark:text-tg-300">admin</span>
+					<span
+						class="rounded-md bg-tg-50 px-2 py-0.5 text-xs font-medium text-tg-700 dark:bg-tg-500/10 dark:text-tg-300"
+						>admin</span
+					>
 				{/if}
 			</div>
 			<div class="font-mono text-xs text-zinc-400">
@@ -62,7 +148,13 @@
 		</div>
 		<div class="text-right">
 			<div class="text-xs text-zinc-400 uppercase">{m.account_field_score()}</div>
-			<div class="font-mono text-lg {d.user.score < 0 ? 'text-red-600' : d.user.score < 50 ? 'text-amber-600' : 'text-zinc-900 dark:text-zinc-100'}">
+			<div
+				class="font-mono text-lg {d.user.score < 0
+					? 'text-red-600'
+					: d.user.score < 50
+						? 'text-amber-600'
+						: 'text-zinc-900 dark:text-zinc-100'}"
+			>
 				{d.user.score}
 			</div>
 		</div>
@@ -72,7 +164,9 @@
 		{m.admin_link_user_apps()}
 	</h2>
 	{#if d.apps.length === 0}
-		<p class="rounded-xl border border-dashed border-zinc-200 p-6 text-center text-sm text-zinc-500 dark:border-zinc-800">
+		<p
+			class="rounded-xl border border-dashed border-zinc-200 p-6 text-center text-sm text-zinc-500 dark:border-zinc-800"
+		>
 			{m.admin_user_apps_empty()}
 		</p>
 	{:else}
@@ -95,12 +189,16 @@
 									{#if a.iconUrl}
 										<img src={a.iconUrl} alt="" class="size-8 shrink-0 rounded-lg object-cover" />
 									{:else}
-										<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-xs font-medium text-zinc-400 dark:bg-zinc-800">
+										<div
+											class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-xs font-medium text-zinc-400 dark:bg-zinc-800"
+										>
 											{a.name.charAt(0)}
 										</div>
 									{/if}
 									<div class="min-w-0">
-										<div class="truncate font-medium text-zinc-900 dark:text-zinc-100">{a.name}</div>
+										<div class="truncate font-medium text-zinc-900 dark:text-zinc-100">
+											{a.name}
+										</div>
 										{#if a.packageName}
 											<div class="truncate font-mono text-xs text-zinc-400">{a.packageName}</div>
 										{/if}
@@ -121,7 +219,11 @@
 								>
 									{m.admin_app_view_testers()}
 									<svg class="size-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-										<path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.05 10 7.23 6.29a.75.75 0 1 1 1.04-1.08l4.39 4.25a.75.75 0 0 1 0 1.08l-4.39 4.25a.75.75 0 0 1-1.06-.02Z" clip-rule="evenodd" />
+										<path
+											fill-rule="evenodd"
+											d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.05 10 7.23 6.29a.75.75 0 1 1 1.04-1.08l4.39 4.25a.75.75 0 0 1 0 1.08l-4.39 4.25a.75.75 0 0 1-1.06-.02Z"
+											clip-rule="evenodd"
+										/>
 									</svg>
 								</a>
 							</td>
@@ -136,7 +238,9 @@
 		{m.admin_user_commitments_title()}
 	</h2>
 	{#if d.commitments.length === 0}
-		<p class="rounded-xl border border-dashed border-zinc-200 p-6 text-center text-sm text-zinc-500 dark:border-zinc-800">
+		<p
+			class="rounded-xl border border-dashed border-zinc-200 p-6 text-center text-sm text-zinc-500 dark:border-zinc-800"
+		>
 			{m.admin_user_commitments_empty()}
 		</p>
 	{:else}
@@ -153,10 +257,17 @@
 					{#each d.commitments as c (c.id)}
 						<tr class="border-t border-zinc-100 dark:border-zinc-800">
 							<td class="p-3">
-								<a href="/apps/{appSlug({ id: c.appId, packageName: c.appPackageName })}" class="font-medium text-zinc-900 hover:underline dark:text-zinc-100">{c.appName}</a>
+								<a
+									href="/apps/{appSlug({ id: c.appId, packageName: c.appPackageName })}"
+									class="font-medium text-zinc-900 hover:underline dark:text-zinc-100"
+									>{c.appName}</a
+								>
 							</td>
 							<td class="p-3">
-								<StatusBadge tone={commitmentStatusTone(c.status)} label={cmtStatusLabel[c.status]()} />
+								<StatusBadge
+									tone={commitmentStatusTone(c.status)}
+									label={cmtStatusLabel[c.status]()}
+								/>
 							</td>
 							<td class="p-3 font-mono text-xs text-zinc-500">{fmt(c.startedAt)}</td>
 						</tr>
@@ -166,3 +277,89 @@
 		</div>
 	{/if}
 </section>
+
+{#if showBroadcast}
+	<!-- Tum kullanicilara duyuru modali: tr + en metni, herkese kendi dilinde gider. -->
+	<div
+		class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+		role="button"
+		tabindex="0"
+		onclick={(e) => {
+			if (e.target === e.currentTarget) showBroadcast = false;
+		}}
+		onkeydown={(e) => {
+			if (e.key === 'Escape') showBroadcast = false;
+		}}
+	>
+		<div
+			class="w-full max-w-lg rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800 dark:bg-zinc-900"
+		>
+			<h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+				{m.admin_broadcast_title()}
+			</h2>
+			<p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{m.admin_broadcast_desc()}</p>
+
+			<form
+				method="POST"
+				action="?/broadcast"
+				use:enhance={() => {
+					return async ({ update, result }) => {
+						await update();
+						if (result.type === 'success') showBroadcast = false;
+					};
+				}}
+				onsubmit={(e) => {
+					if (!confirm(m.admin_broadcast_confirm())) e.preventDefault();
+				}}
+				class="mt-4 space-y-4"
+			>
+				<div>
+					<label
+						for="bc-tr"
+						class="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-200"
+					>
+						{m.admin_broadcast_tr_label()}
+					</label>
+					<textarea
+						id="bc-tr"
+						name="bodyTr"
+						rows="3"
+						required
+						class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+					></textarea>
+				</div>
+				<div>
+					<label
+						for="bc-en"
+						class="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-200"
+					>
+						{m.admin_broadcast_en_label()}
+					</label>
+					<textarea
+						id="bc-en"
+						name="bodyEn"
+						rows="3"
+						required
+						class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+					></textarea>
+				</div>
+
+				<div class="flex justify-end gap-2 pt-1">
+					<button
+						type="button"
+						onclick={() => (showBroadcast = false)}
+						class="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+					>
+						{m.admin_broadcast_cancel()}
+					</button>
+					<button
+						type="submit"
+						class="inline-flex items-center gap-1.5 rounded-lg bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
+					>
+						{m.admin_broadcast_send()}
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+{/if}

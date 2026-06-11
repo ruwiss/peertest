@@ -10,6 +10,12 @@ import {
 	type AppInput,
 	type OwnedApp
 } from '$lib/server/apps';
+import { broadcastNewApp } from '$lib/server/broadcast';
+
+// Yeni uygulama eklendiginde tum kullanicilara duyuru DM'i, batch'ler halinde
+// (serverless'ta waitUntil yok -> await ediliyor) gonderilir. Buyuk alici
+// listelerinde gonderim uzayabilecegi icin fonksiyon suresini yukseltiyoruz.
+export const config = { maxDuration: 60 };
 
 export const load: PageServerLoad = async ({ locals }) => {
 	let apps: OwnedApp[] = [];
@@ -53,10 +59,19 @@ function parseInput(fd: FormData): AppInput {
 export const actions: Actions = {
 	create: async ({ request, locals }) => {
 		const fd = await request.formData();
+		const input = parseInput(fd);
+		let appId: string;
 		try {
-			await createApp(locals.user!.id, parseInput(fd));
+			appId = await createApp(locals.user!.id, input);
 		} catch (e) {
 			return fail(400, { message: (e as Error).message, action: 'create' as const, id: '' });
+		}
+		// Uygulama ilk kez eklendi -> tum kullanicilara (dillerine gore) duyur.
+		// Duyuru basarisiz olsa bile uygulama olusturma basarili sayilir.
+		try {
+			await broadcastNewApp({ id: appId, name: input.name.trim(), ownerId: locals.user!.id });
+		} catch (e) {
+			console.warn('[my-apps] uygulama duyurusu gonderilemedi:', e);
 		}
 		return { success: true };
 	},

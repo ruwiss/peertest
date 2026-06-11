@@ -22,7 +22,8 @@ export type TemplateKey =
 	| 'bot_link_welcome'
 	| 'trade_requested'
 	| 'trade_matched'
-	| 'free_joined';
+	| 'free_joined'
+	| 'app_published';
 
 export type Locale = 'tr' | 'en';
 
@@ -89,6 +90,11 @@ export const DEFAULT_TEMPLATES: Record<TemplateKey, Record<Locale, string>> = {
 	free_joined: {
 		tr: '{ad}, {app} uygulamana karsiliksiz tester olarak katildi. Tesekkurler!',
 		en: '{ad} joined your app {app} as a free tester. Thanks!'
+	},
+	// Yeni uygulama EKLENDIGINDE botu baglamis tum kullanicilara duyuru (dile gore).
+	app_published: {
+		tr: '🚀 Yeni uygulama yayında!\n\n<b>{app}</b> test için eklendi. Slotlar dolmadan katıl:\n{link}',
+		en: '🚀 New app published!\n\n<b>{app}</b> was just added for testing. Join before the slots fill up:\n{link}'
 	}
 };
 
