@@ -4,6 +4,7 @@ import { db } from './db';
 import { users } from './db/schema';
 import { sendTelegramMessage } from './notify';
 import { getRenderedTemplate, type Locale } from './templates';
+import { appSlug } from '$lib/utils/slug';
 
 // ============================================================
 // TOPLU DUYURU (BROADCAST)
@@ -20,7 +21,7 @@ import { getRenderedTemplate, type Locale } from './templates';
 // route'larin maxDuration'i yukseltilmistir.
 // ============================================================
 
-const SITE_URL = 'https://peertest.live';
+const SITE_URL = 'https://www.peertest.live';
 
 // 25 mesaj/grup + gruplar arasi 1sn => efektif ~25 msg/sn (limitin altinda).
 const BATCH_SIZE = 25;
@@ -68,6 +69,7 @@ async function dispatch(
 export async function broadcastNewApp(app: {
 	id: string;
 	name: string;
+	packageName: string | null;
 	ownerId: string;
 }): Promise<BroadcastResult> {
 	// Bot token yoksa (or. lokal gelistirme) hic ugrasma.
@@ -82,7 +84,8 @@ export async function broadcastNewApp(app: {
 	if (recipients.length === 0) return { total: 0, sent: 0 };
 
 	// Metni dil basina TEK kez render et (degiskenler tum alicilarda ayni).
-	const vars = { app: app.name, link: `${SITE_URL}/apps/${app.id}` };
+	// Link, sitenin geri kalaniyla ayni slug mantigini kullanir: paket adi -> yoksa UUID.
+	const vars = { app: app.name, link: `${SITE_URL}/apps/${appSlug(app)}` };
 	const textByLocale: Record<Locale, string> = {
 		tr: await getRenderedTemplate('app_published', 'tr', vars),
 		en: await getRenderedTemplate('app_published', 'en', vars)

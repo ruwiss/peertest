@@ -93,8 +93,8 @@ export const DEFAULT_TEMPLATES: Record<TemplateKey, Record<Locale, string>> = {
 	},
 	// Yeni uygulama EKLENDIGINDE botu baglamis tum kullanicilara duyuru (dile gore).
 	app_published: {
-		tr: '🚀 Yeni uygulama yayında!\n\n<b>{app}</b> test için eklendi. Slotlar dolmadan katıl:\n{link}',
-		en: '🚀 New app published!\n\n<b>{app}</b> was just added for testing. Join before the slots fill up:\n{link}'
+		tr: 'Bir kullanıcı uygulamasını paylaştı - <b>{app}</b>\n\nSiz de uygulamanızı paylaşarak karşılıklı test edebilirsiniz.\n{link}',
+		en: "A user just shared their app - <b>{app}</b>\n\nShare yours too and you can test each other's apps.\n{link}"
 	}
 };
 

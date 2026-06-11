@@ -69,7 +69,12 @@ export const actions: Actions = {
 		// Uygulama ilk kez eklendi -> tum kullanicilara (dillerine gore) duyur.
 		// Duyuru basarisiz olsa bile uygulama olusturma basarili sayilir.
 		try {
-			await broadcastNewApp({ id: appId, name: input.name.trim(), ownerId: locals.user!.id });
+			await broadcastNewApp({
+				id: appId,
+				name: input.name.trim(),
+				packageName: input.packageName?.trim() || null,
+				ownerId: locals.user!.id
+			});
 		} catch (e) {
 			console.warn('[my-apps] uygulama duyurusu gonderilemedi:', e);
 		}
