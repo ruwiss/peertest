@@ -418,6 +418,11 @@
 	"step_label": "Step {n}",
 	"step_groups": "Join Google Groups",
 	"step_play_store": "Open in Play Store",
+	"qr_title": "Open in Play Store",
+	"qr_hint": "Scan with your phone to open the app.",
+	"qr_open_link": "Open link",
+	"qr_close": "Close",
+	"qr_failed": "Could not generate QR.",
 	"commitments_open_app": "Open the app",
 
 	"home_search_placeholder": "Search apps, package name or developer…",

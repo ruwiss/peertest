@@ -8,6 +8,7 @@
 	import StatusBadge from '$lib/components/StatusBadge.svelte';
 	import BackLink from '$lib/components/BackLink.svelte';
 	import Icon from '$lib/components/Icon.svelte';
+	import QrModal from '$lib/components/QrModal.svelte';
 	import { appStatusTone } from '$lib/utils/status';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
@@ -18,6 +19,9 @@
 	let reportReason = $state('');
 	let reportError = $derived(form && 'reportError' in form ? form.reportError : null);
 	let reportDone = $derived(form && 'reported' in form ? form.reported : false);
+
+	// Play Store QR modali.
+	let showQr = $state(false);
 
 	const statusLabel: Record<string, () => string> = {
 		active: m.app_status_active,
@@ -270,16 +274,15 @@
 			{/if}
 
 			{#if data.access.appLink}
-				<a
-					href={data.access.appLink}
-					target="_blank"
-					rel="noopener noreferrer"
+				<button
+					type="button"
+					onclick={() => (showQr = true)}
 					class="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 sm:px-4 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
 				>
 					<span class="font-mono text-xs">2</span>
 					<span class="hidden sm:inline">{m.step_play_store()}</span>
 					<span class="sm:hidden">Play Store</span>
-				</a>
+				</button>
 			{:else}
 				<span
 					class="inline-flex items-center gap-2 rounded-lg border border-zinc-200 px-3 py-2 text-sm text-zinc-400 sm:px-4 dark:border-zinc-700"
@@ -700,4 +703,8 @@
 			</form>
 		</div>
 	</div>
+{/if}
+
+{#if showQr && data.access.appLink}
+	<QrModal url={data.access.appLink} title={m.step_play_store()} onclose={() => (showQr = false)} />
 {/if}

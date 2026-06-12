@@ -418,6 +418,11 @@
 	"step_label": "Aşama {n}",
 	"step_groups": "Google Groups'a katıl",
 	"step_play_store": "Play Store'da aç",
+	"qr_title": "Play Store'da aç",
+	"qr_hint": "Telefonunla taratıp uygulamayı aç.",
+	"qr_open_link": "Bağlantıyı aç",
+	"qr_close": "Kapat",
+	"qr_failed": "QR oluşturulamadı.",
 	"commitments_open_app": "Uygulamayı aç",
 
 	"home_search_placeholder": "Uygulama, paket adı veya geliştirici ara…",

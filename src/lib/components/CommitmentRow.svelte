@@ -5,6 +5,9 @@
 	import { isWindowOpen } from '$lib/utils/checkpoint';
 	import StatusBadge from './StatusBadge.svelte';
 	import CheckpointTimeline from './CheckpointTimeline.svelte';
+	import QrModal from './QrModal.svelte';
+
+	let showQr = $state(false);
 
 	interface Props {
 		commitment: MyCommitment;
@@ -74,15 +77,14 @@
 			<span class="font-mono">1</span>
 			{m.step_groups()}
 		</a>
-		<a
-			href={commitment.app.appLink}
-			target="_blank"
-			rel="noopener noreferrer"
+		<button
+			type="button"
+			onclick={() => (showQr = true)}
 			class="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
 		>
 			<span class="font-mono">2</span>
 			{m.step_play_store()}
-		</a>
+		</button>
 	</div>
 
 	<CheckpointTimeline checkpoints={commitment.checkpoints} {now} />
@@ -119,3 +121,11 @@
 		</div>
 	{/if}
 </div>
+
+{#if showQr}
+	<QrModal
+		url={commitment.app.appLink}
+		title={m.step_play_store()}
+		onclose={() => (showQr = false)}
+	/>
+{/if}
