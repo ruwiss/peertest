@@ -23,6 +23,9 @@ export const CHECKPOINT_LABELS: Record<CheckpointKind, string> = {
 
 const DAY_MS = 86_400_000;
 const HOUR_MS = 3_600_000;
+// Pencere baslangicini 1 dakika one cekeriz: istemci saati sunucudan birkac saniye
+// geri olabilir; bu olmadan hemen acilmasi gereken "Katildim" adimi kapali gorunuyordu.
+const START_GRACE_MS = 60_000;
 
 /** started_at + ofsetlerden 3 checkpoint penceresini uretir. */
 export function computeWindows(
@@ -32,7 +35,7 @@ export function computeWindows(
 	const base = startedAt.getTime();
 	return CHECKPOINT_ORDER.map((kind) => {
 		const o = w[kind];
-		const start = new Date(base + o.start * DAY_MS);
+		const start = new Date(base + o.start * DAY_MS - START_GRACE_MS);
 		const end = new Date(base + o.end * DAY_MS + (o.toleranceHours ?? 0) * HOUR_MS);
 		return { kind, windowStart: start, windowEnd: end };
 	});

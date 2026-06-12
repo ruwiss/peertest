@@ -106,7 +106,9 @@
 		{m.commitments_title()}
 	</h1>
 
-	<div class="mb-6 -mx-2 flex gap-1 overflow-x-auto border-b border-zinc-200 px-2 dark:border-zinc-800">
+	<div
+		class="-mx-2 mb-6 flex gap-1 overflow-x-auto border-b border-zinc-200 px-2 dark:border-zinc-800"
+	>
 		<button
 			onclick={() => (tab = 'active')}
 			class="shrink-0 border-b-2 px-3 py-2 text-sm font-medium {tab === 'active'
@@ -131,7 +133,10 @@
 		>
 			{m.trades_section_title()}
 			{#if tradeBadgeCount > 0}
-				<span class="ml-1 inline-flex items-center justify-center rounded-full bg-tg-100 px-1.5 text-[10px] font-semibold text-tg-700 dark:bg-tg-500/20 dark:text-tg-300">{tradeBadgeCount}</span>
+				<span
+					class="ml-1 inline-flex items-center justify-center rounded-full bg-tg-100 px-1.5 text-[10px] font-semibold text-tg-700 dark:bg-tg-500/20 dark:text-tg-300"
+					>{tradeBadgeCount}</span
+				>
 			{/if}
 		</button>
 	</div>
@@ -155,37 +160,71 @@
 		<div class="space-y-6">
 			<!-- Bana gelen istekler -->
 			<div>
-				<h2 class="mb-2 text-sm font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
+				<h2
+					class="mb-2 text-sm font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400"
+				>
 					{m.trades_incoming()} ({data.incomingTrades.length})
 				</h2>
 				{#if data.incomingTrades.length === 0}
-					<p class="rounded-xl border border-dashed border-zinc-200 p-6 text-center text-sm text-zinc-500 dark:border-zinc-800">
+					<p
+						class="rounded-xl border border-dashed border-zinc-200 p-6 text-center text-sm text-zinc-500 dark:border-zinc-800"
+					>
 						{m.trades_empty_incoming()}
 					</p>
 				{:else}
 					<div class="space-y-2">
 						{#each data.incomingTrades as t (t.id)}
-							<div class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+							<div
+								class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
+							>
 								<div class="flex flex-wrap items-start justify-between gap-3">
 									<div class="min-w-0 flex-1">
 										<div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-											<a href="/users/{t.target.ownerId}" class="hover:underline">{t.target.ownerName}</a>
+											<a href="/users/{t.target.ownerId}" class="hover:underline"
+												>{t.target.ownerName}</a
+											>
 											<span class="text-zinc-500">→</span>
-											<a href="/apps/{appSlug({ id: t.offered.appId, packageName: t.offered.packageName })}" class="text-tg-600 hover:underline dark:text-tg-400">{t.offered.appName}</a>
+											<a
+												href="/apps/{appSlug({
+													id: t.offered.appId,
+													packageName: t.offered.packageName
+												})}"
+												class="text-tg-600 hover:underline dark:text-tg-400">{t.offered.appName}</a
+											>
 										</div>
 										<div class="mt-1.5 grid gap-1.5 text-xs sm:grid-cols-2">
 											<div class="flex items-center gap-1.5">
 												<span class="text-zinc-400 uppercase">{m.trades_target_label()}:</span>
-												<a href="/apps/{appSlug({ id: t.target.appId, packageName: t.target.packageName })}" class="font-medium text-zinc-700 hover:underline dark:text-zinc-200">{t.target.appName}</a>
+												<a
+													href="/apps/{appSlug({
+														id: t.target.appId,
+														packageName: t.target.packageName
+													})}"
+													class="font-medium text-zinc-700 hover:underline dark:text-zinc-200"
+													>{t.target.appName}</a
+												>
 											</div>
 											<div class="flex items-center gap-1.5">
 												<span class="text-zinc-400 uppercase">{m.trades_offer_label()}:</span>
-												<a href="/apps/{appSlug({ id: t.offered.appId, packageName: t.offered.packageName })}" class="font-medium text-zinc-700 hover:underline dark:text-zinc-200">{t.offered.appName}</a>
+												<a
+													href="/apps/{appSlug({
+														id: t.offered.appId,
+														packageName: t.offered.packageName
+													})}"
+													class="font-medium text-zinc-700 hover:underline dark:text-zinc-200"
+													>{t.offered.appName}</a
+												>
 											</div>
 										</div>
 										<p class="mt-2 text-xs text-zinc-500">{m.trades_accept_hint()}</p>
 									</div>
-									<a href="/apps/{appSlug({ id: t.offered.appId, packageName: t.offered.packageName })}" class="shrink-0 rounded-lg bg-tg-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-tg-500">
+									<a
+										href="/apps/{appSlug({
+											id: t.offered.appId,
+											packageName: t.offered.packageName
+										})}"
+										class="shrink-0 rounded-lg bg-tg-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-tg-500"
+									>
 										{m.trades_open_app_btn()}
 									</a>
 								</div>
@@ -197,29 +236,57 @@
 
 			<!-- Gonderdigim istekler -->
 			<div>
-				<h2 class="mb-2 text-sm font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
+				<h2
+					class="mb-2 text-sm font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400"
+				>
 					{m.trades_outgoing()} ({outgoingPending.length})
 				</h2>
 				{#if outgoingPending.length === 0}
-					<p class="rounded-xl border border-dashed border-zinc-200 p-6 text-center text-sm text-zinc-500 dark:border-zinc-800">
+					<p
+						class="rounded-xl border border-dashed border-zinc-200 p-6 text-center text-sm text-zinc-500 dark:border-zinc-800"
+					>
 						{m.trades_empty_outgoing()}
 					</p>
 				{:else}
 					<div class="space-y-2">
 						{#each outgoingPending as t (t.id)}
-							<div class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+							<div
+								class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
+							>
 								<div class="flex flex-wrap items-start justify-between gap-3">
 									<div class="min-w-0 flex-1">
 										<div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-											<a href="/apps/{appSlug({ id: t.target.appId, packageName: t.target.packageName })}" class="text-tg-600 hover:underline dark:text-tg-400">{t.target.appName}</a>
+											<a
+												href="/apps/{appSlug({
+													id: t.target.appId,
+													packageName: t.target.packageName
+												})}"
+												class="text-tg-600 hover:underline dark:text-tg-400">{t.target.appName}</a
+											>
 											<span class="text-zinc-500">↔</span>
-											<a href="/apps/{appSlug({ id: t.offered.appId, packageName: t.offered.packageName })}" class="hover:underline">{t.offered.appName}</a>
+											<a
+												href="/apps/{appSlug({
+													id: t.offered.appId,
+													packageName: t.offered.packageName
+												})}"
+												class="hover:underline">{t.offered.appName}</a
+											>
 										</div>
 										<div class="mt-0.5 text-xs text-zinc-500">{fmt(t.createdAt)}</div>
 									</div>
-									<form method="POST" action="?/cancelTrade" use:enhance onsubmit={(e) => { if (!confirm(m.trades_cancel_confirm())) e.preventDefault(); }}>
+									<form
+										method="POST"
+										action="?/cancelTrade"
+										use:enhance
+										onsubmit={(e) => {
+											if (!confirm(m.trades_cancel_confirm())) e.preventDefault();
+										}}
+									>
 										<input type="hidden" name="tradeId" value={t.id} />
-										<button type="submit" class="shrink-0 rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800">
+										<button
+											type="submit"
+											class="shrink-0 rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+										>
 											{m.trades_cancel_btn()}
 										</button>
 									</form>
@@ -273,9 +340,22 @@
 		<div
 			class="w-full max-w-md rounded-t-2xl border border-zinc-200 bg-white p-6 sm:rounded-xl dark:border-zinc-800 dark:bg-zinc-900"
 		>
-			<div class="mb-3 inline-flex size-12 items-center justify-center rounded-2xl bg-tg-50 text-tg-700 dark:bg-tg-500/15 dark:text-tg-300">
-				<svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-					<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+			<div
+				class="mb-3 inline-flex size-12 items-center justify-center rounded-2xl bg-tg-50 text-tg-700 dark:bg-tg-500/15 dark:text-tg-300"
+			>
+				<svg
+					class="size-6"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.8"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<path
+						d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+					/>
 				</svg>
 			</div>
 			<h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
