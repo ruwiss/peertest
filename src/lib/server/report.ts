@@ -40,6 +40,45 @@ export async function createReport(
 	return inserted[0].id;
 }
 
+/** Kullanici bir uygulamayi (uygulama sayfasindan) sikayet eder. Reported = app sahibi. */
+export async function createAppReport(
+	reporterId: string,
+	appId: string,
+	reason: string
+): Promise<string> {
+	if (!reason?.trim()) throw new Error('Şikayet nedeni gerekli.');
+
+	const rows = await db
+		.select({ id: apps.id, userId: apps.userId })
+		.from(apps)
+		.where(eq(apps.id, appId))
+		.limit(1);
+	if (rows.length === 0) throw new Error('Uygulama bulunamadı.');
+	const app = rows[0];
+	if (app.userId === reporterId) throw new Error('Kendi uygulamanı şikayet edemezsin.');
+
+	// Ayni kullanicidan ayni uygulamaya acik bir sikayet varsa tekrar olusturma.
+	const existing = await db
+		.select({ id: reports.id })
+		.from(reports)
+		.where(
+			and(eq(reports.reporterId, reporterId), eq(reports.appId, appId), eq(reports.status, 'open'))
+		)
+		.limit(1);
+	if (existing.length > 0) throw new Error('Bu uygulama için zaten açık bir şikayetin var.');
+
+	const inserted = await db
+		.insert(reports)
+		.values({
+			reporterId,
+			reportedId: app.userId,
+			appId,
+			reason: reason.trim()
+		})
+		.returning({ id: reports.id });
+	return inserted[0].id;
+}
+
 export interface ReportView {
 	id: string;
 	reason: string;
@@ -47,6 +86,8 @@ export interface ReportView {
 	createdAt: Date;
 	adminNote: string | null;
 	commitmentId: string | null;
+	// Uygulama sikayetiyse dolu (tester sikayetiyse null).
+	app: { id: string; name: string } | null;
 	reporter: { id: string; firstName: string; username: string | null };
 	reported: { id: string; firstName: string; username: string | null; score: number };
 	screenshots: { url: string; shareUrl: string }[];
@@ -64,6 +105,7 @@ export async function listReports(
 			createdAt: reports.createdAt,
 			adminNote: reports.adminNote,
 			commitmentId: reports.commitmentId,
+			appId: reports.appId,
 			reporterId: reports.reporterId,
 			reportedId: reports.reportedId
 		})
@@ -71,6 +113,13 @@ export async function listReports(
 		.where(eq(reports.status, status))
 		.orderBy(desc(reports.createdAt));
 	if (rows.length === 0) return [];
+
+	// Uygulama sikayetleri icin app adlari.
+	const appIds = [...new Set(rows.map((r) => r.appId).filter((x): x is string => !!x))];
+	const appRows = appIds.length
+		? await db.select({ id: apps.id, name: apps.name }).from(apps).where(inArray(apps.id, appIds))
+		: [];
+	const appMap = new Map(appRows.map((a) => [a.id, a]));
 
 	// Taraflar.
 	const userIds = [...new Set(rows.flatMap((r) => [r.reporterId, r.reportedId]))];
@@ -111,6 +160,7 @@ export async function listReports(
 			createdAt: r.createdAt,
 			adminNote: r.adminNote,
 			commitmentId: r.commitmentId,
+			app: r.appId ? (appMap.get(r.appId) ?? null) : null,
 			reporter: {
 				id: r.reporterId,
 				firstName: rep?.firstName ?? '?',

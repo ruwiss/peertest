@@ -124,6 +124,78 @@ export async function listFrozenApps(): Promise<FrozenAppView[]> {
 	}));
 }
 
+export interface AdminAppView {
+	id: string;
+	name: string;
+	packageName: string | null;
+	iconUrl: string | null;
+	status: 'active' | 'frozen' | 'closed';
+	slotsTotal: number;
+	filled: number;
+	createdAt: Date;
+	owner: { id: string; firstName: string; username: string | null };
+}
+
+/**
+ * Tum uygulamalari listeler (sahip + dolu slot sayisi ile). Opsiyonel arama:
+ * uygulama adi/paket adi veya sahibin adi/username'i. En yeni once.
+ */
+export async function listApps(query?: string): Promise<AdminAppView[]> {
+	const q = query?.trim();
+	let where;
+	if (q) {
+		const pat = `%${escapeLike(q)}%`;
+		where = or(
+			ilike(apps.name, pat),
+			ilike(apps.packageName, pat),
+			ilike(users.firstName, pat),
+			ilike(users.username, pat)
+		);
+	}
+
+	const rows = await db
+		.select({
+			id: apps.id,
+			name: apps.name,
+			packageName: apps.packageName,
+			iconUrl: apps.iconUrl,
+			status: apps.status,
+			slotsTotal: apps.slotsTotal,
+			createdAt: apps.createdAt,
+			ownerId: users.id,
+			ownerFirstName: users.firstName,
+			ownerUsername: users.username
+		})
+		.from(apps)
+		.innerJoin(users, eq(apps.userId, users.id))
+		.where(where)
+		.orderBy(desc(apps.createdAt))
+		.limit(100);
+	if (rows.length === 0) return [];
+
+	const ids = rows.map((r) => r.id);
+	const filledRows = await db
+		.select({ appId: commitments.appId, c: count() })
+		.from(commitments)
+		.where(
+			and(inArray(commitments.appId, ids), inArray(commitments.status, ['active', 'completed']))
+		)
+		.groupBy(commitments.appId);
+	const filled = new Map(filledRows.map((r) => [r.appId, r.c]));
+
+	return rows.map((r) => ({
+		id: r.id,
+		name: r.name,
+		packageName: r.packageName,
+		iconUrl: r.iconUrl,
+		status: r.status,
+		slotsTotal: r.slotsTotal,
+		filled: filled.get(r.id) ?? 0,
+		createdAt: r.createdAt,
+		owner: { id: r.ownerId, firstName: r.ownerFirstName, username: r.ownerUsername }
+	}));
+}
+
 export interface AdminUserDetail {
 	user: {
 		id: string;
@@ -223,9 +295,10 @@ export async function getUserDetail(userId: string): Promise<AdminUserDetail | n
 
 /**
  * Admin: bir uygulamayi tamamen siler (cascade: commitments + checkpoints).
- * Sahibe bilgilendirme DM'i atilir.
+ * Sahibe bilgilendirme DM'i atilir. Opsiyonel `reason` verilirse silme sebebi
+ * mesaja eklenir (sebep sablonu kullanilir).
  */
-export async function adminDeleteApp(appId: string): Promise<void> {
+export async function adminDeleteApp(appId: string, reason?: string): Promise<void> {
 	const appRow = await db
 		.select({
 			id: apps.id,
@@ -244,11 +317,20 @@ export async function adminDeleteApp(appId: string): Promise<void> {
 
 	await db.delete(apps).where(eq(apps.id, appId));
 
+	const trimmedReason = reason?.trim();
 	if (a.ownerBotStarted) {
-		await sendTemplate(a.ownerTelegramId, 'app_deleted_by_admin', a.ownerLocale, {
-			ad: a.ownerFirstName,
-			app: a.name
-		});
+		if (trimmedReason) {
+			await sendTemplate(a.ownerTelegramId, 'app_deleted_by_admin_reason', a.ownerLocale, {
+				ad: a.ownerFirstName,
+				app: a.name,
+				sebep: trimmedReason
+			});
+		} else {
+			await sendTemplate(a.ownerTelegramId, 'app_deleted_by_admin', a.ownerLocale, {
+				ad: a.ownerFirstName,
+				app: a.name
+			});
+		}
 	}
 }
 

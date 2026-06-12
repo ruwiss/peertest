@@ -19,6 +19,7 @@ export type TemplateKey =
 	| 'tester_removed_by_owner'
 	| 'tester_removed_by_admin'
 	| 'app_deleted_by_admin'
+	| 'app_deleted_by_admin_reason'
 	| 'bot_link_welcome'
 	| 'trade_requested'
 	| 'trade_matched'
@@ -71,6 +72,11 @@ export const DEFAULT_TEMPLATES: Record<TemplateKey, Record<Locale, string>> = {
 	app_deleted_by_admin: {
 		tr: 'Merhaba {ad}, {app} uygulaman yönetim tarafından silindi.',
 		en: 'Hi {ad}, your app {app} has been removed by an administrator.'
+	},
+	// Silme sebebi belirtildiginde kullanilir (sebep admin tarafindan yazilir).
+	app_deleted_by_admin_reason: {
+		tr: 'Merhaba {ad}, {app} uygulaman yönetim tarafından silindi.\n\nSebep: {sebep}',
+		en: 'Hi {ad}, your app {app} has been removed by an administrator.\n\nReason: {sebep}'
 	},
 	bot_link_welcome: {
 		tr: 'Merhaba {ad}! Botu başlattın. Bağlantıyı tamamlamak için PeerTest sitesine geri dön ve "Bağladım, kontrol et" butonuna tıkla. Onaylar onaylamaz checkpoint hatırlatmaları buradan ulaşacak.',

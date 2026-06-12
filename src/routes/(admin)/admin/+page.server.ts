@@ -2,9 +2,11 @@ import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import {
 	listUsers,
+	listApps,
 	adjustScore,
 	shadowban,
 	deleteUser,
+	adminDeleteApp,
 	listFrozenApps,
 	manualUnfreeze
 } from '$lib/server/admin';
@@ -12,18 +14,20 @@ import { listReports, resolveReport } from '$lib/server/report';
 
 export const load: PageServerLoad = async ({ url }) => {
 	const q = url.searchParams.get('q') ?? '';
+	const aq = url.searchParams.get('aq') ?? '';
 	const rs = url.searchParams.get('rs') ?? 'open';
 	const reportStatus = (['open', 'resolved', 'dismissed'] as const).includes(
 		rs as 'open' | 'resolved' | 'dismissed'
 	)
 		? (rs as 'open' | 'resolved' | 'dismissed')
 		: 'open';
-	const [users, reports, frozen] = await Promise.all([
+	const [users, apps, reports, frozen] = await Promise.all([
 		listUsers(q),
+		listApps(aq),
 		listReports(reportStatus),
 		listFrozenApps()
 	]);
-	return { users, reports, frozen, q, reportStatus };
+	return { users, apps, reports, frozen, q, aq, reportStatus };
 };
 
 function ok() {
@@ -63,6 +67,17 @@ export const actions: Actions = {
 		const fd = await request.formData();
 		try {
 			await deleteUser(String(fd.get('userId')));
+		} catch (e) {
+			return err(e);
+		}
+		return ok();
+	},
+
+	// Admin: bir uygulamayi tamamen siler. Opsiyonel sebep sahibe DM olarak gider.
+	deleteApp: async ({ request }) => {
+		const fd = await request.formData();
+		try {
+			await adminDeleteApp(String(fd.get('appId')), String(fd.get('reason') ?? '') || undefined);
 		} catch (e) {
 			return err(e);
 		}

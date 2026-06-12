@@ -1,9 +1,11 @@
-import { error } from '@sveltejs/kit';
-import { and, count, desc, eq, inArray, or } from 'drizzle-orm';
-import type { PageServerLoad } from './$types';
+import { error, fail } from '@sveltejs/kit';
+import { and, desc, eq, inArray, or } from 'drizzle-orm';
+import type { Actions, PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { apps, commitments, trades, users } from '$lib/server/db/schema';
 import { getSetting } from '$lib/server/config';
+import { createAppReport } from '$lib/server/report';
+import { filledByApp } from '$lib/server/apps';
 import { scoreTone } from '$lib/utils/score';
 import { isUuid } from '$lib/utils/slug';
 
@@ -46,14 +48,9 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const score = await getSetting('score');
 	if (app.ownerScore < score.hideBelow) error(404, 'Uygulama bulunamadı.');
 
-	// Dolu slot sayisi.
-	const filledRows = await db
-		.select({ c: count() })
-		.from(commitments)
-		.where(
-			and(eq(commitments.appId, app.id), inArray(commitments.status, ['active', 'completed']))
-		);
-	const filled = filledRows[0]?.c ?? 0;
+	// Dolu slot sayisi: completed VEYA en az 1 submitted checkpoint'i olan commitment'lar.
+	// (Ilk kanitini gondermemis 'active' taahhutler slot tutmaz — listeyle ayni mantik.)
+	const filled = (await filledByApp([app.id])).get(app.id) ?? 0;
 
 	// Erisim hakki: sahip VEYA aktif/tamamlanmis taahhudu olan tester.
 	let isOwner = false;
@@ -120,8 +117,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				.limit(1);
 
 			if (incoming.length > 0) {
-				const targetAppName =
-					myOwnApps.find((a) => a.id === incoming[0].targetAppId)?.name ?? '?';
+				const targetAppName = myOwnApps.find((a) => a.id === incoming[0].targetAppId)?.name ?? '?';
 				pendingIncomingTrade = {
 					tradeId: incoming[0].id,
 					targetAppId: incoming[0].targetAppId,
@@ -169,4 +165,20 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		myOwnApps,
 		pendingIncomingTrade
 	};
+};
+
+export const actions: Actions = {
+	// Kullanici bu uygulamayi sikayet eder. appId form'dan gelir (sayfadaki app).
+	report: async ({ request, locals }) => {
+		if (!locals.user) return fail(401, { reportError: 'Önce giriş yapmalısın.' });
+		const fd = await request.formData();
+		const appId = String(fd.get('appId') ?? '');
+		const reason = String(fd.get('reason') ?? '');
+		try {
+			await createAppReport(locals.user.id, appId, reason);
+		} catch (e) {
+			return fail(400, { reportError: (e as Error).message });
+		}
+		return { reported: true as const };
+	}
 };

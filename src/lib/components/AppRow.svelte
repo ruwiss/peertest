@@ -26,6 +26,12 @@
 	<div class="flex min-w-0 flex-1 basis-full items-center gap-3 sm:basis-48">
 		{#if app.iconUrl}
 			<img src={app.iconUrl} alt="" class="size-10 shrink-0 rounded-lg object-cover" />
+		{:else}
+			<div
+				class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-sm font-semibold text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500"
+			>
+				{app.name.charAt(0)}
+			</div>
 		{/if}
 		<div class="min-w-0">
 			<a
@@ -71,7 +77,11 @@
 				class="inline-flex h-9 min-w-[88px] items-center justify-center gap-1 rounded-lg border border-emerald-200 bg-emerald-50 px-3 text-sm font-medium text-emerald-700 hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400 dark:hover:bg-emerald-500/15"
 			>
 				<svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-					<path fill-rule="evenodd" d="M16.704 5.296a1 1 0 0 1 0 1.408l-7.5 7.5a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 1 1 1.414-1.414L8.5 12.086l6.793-6.79a1 1 0 0 1 1.411 0Z" clip-rule="evenodd" />
+					<path
+						fill-rule="evenodd"
+						d="M16.704 5.296a1 1 0 0 1 0 1.408l-7.5 7.5a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 1 1 1.414-1.414L8.5 12.086l6.793-6.79a1 1 0 0 1 1.411 0Z"
+						clip-rule="evenodd"
+					/>
 				</svg>
 				{m.app_joined()}
 			</a>

@@ -58,7 +58,13 @@
 
 		<div class="sm:col-span-4">
 			<label class={labelCls} for="f-name-{app?.id ?? 'new'}">{m.my_apps_form_name()}</label>
-			<input id="f-name-{app?.id ?? 'new'}" name="name" required value={app?.name ?? ''} class={inputCls} />
+			<input
+				id="f-name-{app?.id ?? 'new'}"
+				name="name"
+				required
+				value={app?.name ?? ''}
+				class={inputCls}
+			/>
 			<p class={helpCls}>{m.my_apps_form_helper_name()}</p>
 		</div>
 
@@ -75,8 +81,15 @@
 		</div>
 
 		<div class="sm:col-span-2">
-			<label class={labelCls} for="f-category-{app?.id ?? 'new'}">{m.my_apps_form_category()}</label>
-			<input id="f-category-{app?.id ?? 'new'}" name="category" placeholder="Verimlilik" value={app?.category ?? ''} class={inputCls} />
+			<label class={labelCls} for="f-category-{app?.id ?? 'new'}">{m.my_apps_form_category()}</label
+			>
+			<input
+				id="f-category-{app?.id ?? 'new'}"
+				name="category"
+				placeholder="Verimlilik"
+				value={app?.category ?? ''}
+				class={inputCls}
+			/>
 			<p class={helpCls}>{m.my_apps_form_helper_category()}</p>
 		</div>
 
@@ -98,7 +111,8 @@
 		<div class="sm:col-span-full">
 			<label class={labelCls} for="f-desc-{app?.id ?? 'new'}">{m.my_apps_form_desc()}</label>
 			<textarea id="f-desc-{app?.id ?? 'new'}" name="description" rows="4" class={inputCls}
-				>{app?.description ?? ''}</textarea>
+				>{app?.description ?? ''}</textarea
+			>
 			<p class={helpCls}>{m.my_apps_form_helper_desc()}</p>
 		</div>
 
@@ -119,7 +133,9 @@
 		</div>
 
 		<div class="sm:col-span-full">
-			<label class={labelCls} for="f-grouplink-{app?.id ?? 'new'}">{m.my_apps_form_grouplink()}</label>
+			<label class={labelCls} for="f-grouplink-{app?.id ?? 'new'}"
+				>{m.my_apps_form_grouplink()}</label
+			>
 			<div class="flex flex-wrap items-center gap-2">
 				<input
 					id="f-grouplink-{app?.id ?? 'new'}"
@@ -137,15 +153,29 @@
 					class="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
 				>
 					<svg class="size-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-						<path d="M10 4a1 1 0 0 1 1 1v4h4a1 1 0 1 1 0 2h-4v4a1 1 0 1 1-2 0v-4H5a1 1 0 1 1 0-2h4V5a1 1 0 0 1 1-1Z" />
+						<path
+							d="M10 4a1 1 0 0 1 1 1v4h4a1 1 0 1 1 0 2h-4v4a1 1 0 1 1-2 0v-4H5a1 1 0 1 1 0-2h4V5a1 1 0 0 1 1-1Z"
+						/>
 					</svg>
 					{m.my_apps_form_groups_create()}
 				</a>
 			</div>
-			<div class="mt-2 rounded-lg border border-tg-200 bg-tg-50/50 p-3 text-xs leading-relaxed text-tg-900 dark:border-tg-500/30 dark:bg-tg-500/10 dark:text-tg-200">
+			<p class={helpCls}>{m.my_apps_form_groups_public_help()}</p>
+			<div
+				class="mt-2 rounded-lg border border-tg-200 bg-tg-50/50 p-3 text-xs leading-relaxed text-tg-900 dark:border-tg-500/30 dark:bg-tg-500/10 dark:text-tg-200"
+			>
 				<div class="flex gap-2">
-					<svg class="mt-0.5 size-4 shrink-0 text-tg-600 dark:text-tg-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-						<path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a1 1 0 0 0 0 2v3a1 1 0 0 0 1 1h1a1 1 0 1 0 0-2v-3a1 1 0 0 0-1-1H9Z" clip-rule="evenodd" />
+					<svg
+						class="mt-0.5 size-4 shrink-0 text-tg-600 dark:text-tg-400"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+						aria-hidden="true"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a1 1 0 0 0 0 2v3a1 1 0 0 0 1 1h1a1 1 0 1 0 0-2v-3a1 1 0 0 0-1-1H9Z"
+							clip-rule="evenodd"
+						/>
 					</svg>
 					<span>{m.my_apps_form_groups_help()}</span>
 				</div>
@@ -158,8 +188,14 @@
 			<p class={helpCls + ' !mt-0 mb-3'}>{m.my_apps_form_helper_instructions()}</p>
 			<div class="grid gap-3 sm:grid-cols-3">
 				<div>
-					<label class={labelCls + ' inline-flex items-center gap-1.5'} for="f-inst-joined-{app?.id ?? 'new'}">
-						<span class="inline-flex size-5 items-center justify-center rounded-full bg-tg-100 font-mono text-[10px] font-semibold text-tg-700 dark:bg-tg-500/20 dark:text-tg-300">1</span>
+					<label
+						class={labelCls + ' inline-flex items-center gap-1.5'}
+						for="f-inst-joined-{app?.id ?? 'new'}"
+					>
+						<span
+							class="inline-flex size-5 items-center justify-center rounded-full bg-tg-100 font-mono text-[10px] font-semibold text-tg-700 dark:bg-tg-500/20 dark:text-tg-300"
+							>1</span
+						>
 						{m.checkpoint_joined()}
 					</label>
 					<textarea
@@ -167,12 +203,19 @@
 						name="inst_joined"
 						rows="3"
 						placeholder={m.my_apps_form_placeholder_joined()}
-						class={inputCls}>{app?.instructions?.joined ?? ''}</textarea>
+						class={inputCls}>{app?.instructions?.joined ?? ''}</textarea
+					>
 					<p class={helpCls}>⏱ {m.my_apps_form_when_joined()}</p>
 				</div>
 				<div>
-					<label class={labelCls + ' inline-flex items-center gap-1.5'} for="f-inst-active-{app?.id ?? 'new'}">
-						<span class="inline-flex size-5 items-center justify-center rounded-full bg-tg-100 font-mono text-[10px] font-semibold text-tg-700 dark:bg-tg-500/20 dark:text-tg-300">2</span>
+					<label
+						class={labelCls + ' inline-flex items-center gap-1.5'}
+						for="f-inst-active-{app?.id ?? 'new'}"
+					>
+						<span
+							class="inline-flex size-5 items-center justify-center rounded-full bg-tg-100 font-mono text-[10px] font-semibold text-tg-700 dark:bg-tg-500/20 dark:text-tg-300"
+							>2</span
+						>
 						{m.checkpoint_active()}
 					</label>
 					<textarea
@@ -180,12 +223,19 @@
 						name="inst_active"
 						rows="3"
 						placeholder={m.my_apps_form_placeholder_active()}
-						class={inputCls}>{app?.instructions?.active ?? ''}</textarea>
+						class={inputCls}>{app?.instructions?.active ?? ''}</textarea
+					>
 					<p class={helpCls}>⏱ {m.my_apps_form_when_active()}</p>
 				</div>
 				<div>
-					<label class={labelCls + ' inline-flex items-center gap-1.5'} for="f-inst-completed-{app?.id ?? 'new'}">
-						<span class="inline-flex size-5 items-center justify-center rounded-full bg-tg-100 font-mono text-[10px] font-semibold text-tg-700 dark:bg-tg-500/20 dark:text-tg-300">3</span>
+					<label
+						class={labelCls + ' inline-flex items-center gap-1.5'}
+						for="f-inst-completed-{app?.id ?? 'new'}"
+					>
+						<span
+							class="inline-flex size-5 items-center justify-center rounded-full bg-tg-100 font-mono text-[10px] font-semibold text-tg-700 dark:bg-tg-500/20 dark:text-tg-300"
+							>3</span
+						>
 						{m.checkpoint_completed()}
 					</label>
 					<textarea
@@ -193,7 +243,8 @@
 						name="inst_completed"
 						rows="3"
 						placeholder={m.my_apps_form_placeholder_completed()}
-						class={inputCls}>{app?.instructions?.completed ?? ''}</textarea>
+						class={inputCls}>{app?.instructions?.completed ?? ''}</textarea
+					>
 					<p class={helpCls}>⏱ {m.my_apps_form_when_completed()}</p>
 				</div>
 			</div>
@@ -212,7 +263,9 @@
 				class="inline-flex items-center gap-1.5 rounded-lg bg-tg-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-tg-500"
 			>
 				<svg class="size-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-					<path d="M10 4a1 1 0 0 1 1 1v4h4a1 1 0 1 1 0 2h-4v4a1 1 0 1 1-2 0v-4H5a1 1 0 1 1 0-2h4V5a1 1 0 0 1 1-1Z" />
+					<path
+						d="M10 4a1 1 0 0 1 1 1v4h4a1 1 0 1 1 0 2h-4v4a1 1 0 1 1-2 0v-4H5a1 1 0 1 1 0-2h4V5a1 1 0 0 1 1-1Z"
+					/>
 				</svg>
 				{m.my_apps_add()}
 			</button>
@@ -240,7 +293,9 @@
 					}}
 				class="mb-6 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
 			>
-				<div class="flex items-center justify-between border-b border-zinc-100 bg-zinc-50/60 px-6 py-4 dark:border-zinc-800 dark:bg-zinc-950/40">
+				<div
+					class="flex items-center justify-between border-b border-zinc-100 bg-zinc-50/60 px-6 py-4 dark:border-zinc-800 dark:bg-zinc-950/40"
+				>
 					<h2 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
 						{m.my_apps_form_new()}
 					</h2>
@@ -254,19 +309,25 @@
 						aria-label={m.my_apps_form_cancel()}
 					>
 						<svg class="size-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-							<path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+							<path
+								d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"
+							/>
 						</svg>
 					</button>
 				</div>
 				<div class="px-6 py-5">
 					{@render fields(undefined, true)}
 					{#if err?.action === 'create'}
-						<p class="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300">
+						<p
+							class="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300"
+						>
 							{err.message}
 						</p>
 					{/if}
 				</div>
-				<div class="flex items-center justify-end gap-2 border-t border-zinc-100 bg-zinc-50/60 px-6 py-3 dark:border-zinc-800 dark:bg-zinc-950/40">
+				<div
+					class="flex items-center justify-end gap-2 border-t border-zinc-100 bg-zinc-50/60 px-6 py-3 dark:border-zinc-800 dark:bg-zinc-950/40"
+				>
 					<button
 						type="button"
 						onclick={() => {
@@ -313,7 +374,9 @@
 							{/if}
 							<div class="min-w-0 flex-1 basis-full sm:basis-auto">
 								<div class="flex flex-wrap items-center gap-2">
-									<span class="truncate font-medium text-zinc-900 dark:text-zinc-100">{app.name}</span>
+									<span class="truncate font-medium text-zinc-900 dark:text-zinc-100"
+										>{app.name}</span
+									>
 									<StatusBadge tone={appStatusTone(app.status)} label={statusLabel[app.status]()} />
 								</div>
 								{#if app.packageName}
@@ -396,7 +459,9 @@
 								<input type="hidden" name="id" value={app.id} />
 								{@render fields(app, false)}
 								{#if err?.action === 'update' && err.id === app.id}
-									<p class="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300">
+									<p
+										class="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300"
+									>
 										{err.message}
 									</p>
 								{/if}

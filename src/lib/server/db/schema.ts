@@ -243,6 +243,8 @@ export const reports = pgTable(
 			.notNull()
 			.references(() => users.id, { onDelete: 'cascade' }),
 		commitmentId: uuid('commitment_id').references(() => commitments.id, { onDelete: 'set null' }),
+		// Uygulama sikayetlerinde dolu (tester sikayetlerinde null).
+		appId: uuid('app_id').references(() => apps.id, { onDelete: 'set null' }),
 		reason: text('reason').notNull(),
 		status: reportStatus('status').notNull().default('open'),
 		adminNote: text('admin_note'),

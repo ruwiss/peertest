@@ -45,9 +45,11 @@ export const actions: Actions = {
 	},
 
 	// Admin: uygulamayi tamamen siler. Cascade tum commitments+checkpoints.
-	deleteApp: async ({ params }) => {
+	// Opsiyonel sebep sahibe DM olarak gider.
+	deleteApp: async ({ request, params }) => {
+		const fd = await request.formData();
 		try {
-			await adminDeleteApp(params.id);
+			await adminDeleteApp(params.id, String(fd.get('reason') ?? '') || undefined);
 		} catch (e) {
 			return fail(400, { message: (e as Error).message });
 		}

@@ -12,6 +12,8 @@ export interface CronResult {
 	reminders: number;
 	missed: number;
 	failedCommitments: number;
+	/** Ilk kanitini hic gondermeden suresi gecen taahhutler (cezasiz iptal). */
+	cancelledGhosts: number;
 	frozenUsers: number;
 	unfrozenUsers: number;
 }
@@ -84,10 +86,35 @@ export async function runCron(now: Date = new Date()): Promise<CronResult> {
 			.where(inArray(checkpoints.id, missedCpIds));
 	}
 
+	// Hangi kacirilan commitment'lar en az 1 kanit (submitted checkpoint) almis?
+	// Ilk kanitini bile gondermemis taahhutler "ghost"tur: slot tutmaz, ceza almaz.
+	const missCmtIds = [...missByCommitment.keys()];
+	const proofRows = missCmtIds.length
+		? await db
+				.selectDistinct({ commitmentId: checkpoints.commitmentId })
+				.from(checkpoints)
+				.where(
+					and(inArray(checkpoints.commitmentId, missCmtIds), eq(checkpoints.status, 'submitted'))
+				)
+		: [];
+	const engagedCommitments = new Set(proofRows.map((r) => r.commitmentId));
+
 	const frozenThisRun = new Set<string>();
 	let failedCommitments = 0;
+	let cancelledGhosts = 0;
 
 	for (const [commitmentId, info] of missByCommitment) {
+		// Ghost: hic kanit gondermemis. Cezasiz iptal et (puan dusmez, freeze yok, slot zaten bostu).
+		if (!engagedCommitments.has(commitmentId)) {
+			const cancelled = await db
+				.update(commitments)
+				.set({ status: 'cancelled' })
+				.where(and(eq(commitments.id, commitmentId), eq(commitments.status, 'active')))
+				.returning({ id: commitments.id });
+			if (cancelled.length > 0) cancelledGhosts++;
+			continue;
+		}
+
 		// Commitment'i failed yap (sadece hala active ise).
 		const failed = await db
 			.update(commitments)
@@ -137,6 +164,7 @@ export async function runCron(now: Date = new Date()): Promise<CronResult> {
 		reminders,
 		missed: missedCpIds.length,
 		failedCommitments,
+		cancelledGhosts,
 		frozenUsers: frozenThisRun.size,
 		unfrozenUsers
 	};

@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
+	import { enhance } from '$app/forms';
 	import * as m from '$lib/paraglide/messages';
-	import type { PageData } from './$types';
+	import type { PageData, ActionData } from './$types';
 	import SlotPips from '$lib/components/SlotPips.svelte';
 	import ScoreBadge from '$lib/components/ScoreBadge.svelte';
 	import StatusBadge from '$lib/components/StatusBadge.svelte';
@@ -9,7 +10,14 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import { appStatusTone } from '$lib/utils/status';
 
-	let { data }: { data: PageData } = $props();
+	let { data, form }: { data: PageData; form: ActionData } = $props();
+
+	// Sikayet modali (sadece giris yapmis, sahip olmayan kullanicilar icin).
+	const canReport = $derived(data.loggedIn && !data.access.isOwner);
+	let reporting = $state(false);
+	let reportReason = $state('');
+	let reportError = $derived(form && 'reportError' in form ? form.reportError : null);
+	let reportDone = $derived(form && 'reported' in form ? form.reported : false);
 
 	const statusLabel: Record<string, () => string> = {
 		active: m.app_status_active,
@@ -139,7 +147,11 @@
 		<!-- Ust kisim: ikon + ad + paket -->
 		<div class="flex flex-wrap items-start gap-3 sm:gap-4">
 			{#if data.app.iconUrl}
-				<img src={data.app.iconUrl} alt="" class="size-14 shrink-0 rounded-2xl object-cover sm:size-16" />
+				<img
+					src={data.app.iconUrl}
+					alt=""
+					class="size-14 shrink-0 rounded-2xl object-cover sm:size-16"
+				/>
 			{:else}
 				<div
 					class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-zinc-100 text-xl font-semibold text-zinc-400 sm:size-16 dark:bg-zinc-800"
@@ -149,7 +161,9 @@
 			{/if}
 
 			<div class="min-w-0 flex-1">
-				<h1 class="truncate text-lg font-semibold tracking-tight text-zinc-900 sm:text-xl dark:text-zinc-100">
+				<h1
+					class="truncate text-lg font-semibold tracking-tight text-zinc-900 sm:text-xl dark:text-zinc-100"
+				>
 					{data.app.name}
 				</h1>
 				{#if data.app.summary}
@@ -185,7 +199,9 @@
 							{data.owner.firstName.charAt(0)}
 						</span>
 					{/if}
-					<span class="text-zinc-700 group-hover:underline dark:text-zinc-200">{data.owner.firstName}</span>
+					<span class="text-zinc-700 group-hover:underline dark:text-zinc-200"
+						>{data.owner.firstName}</span
+					>
 					<ScoreBadge score={data.owner.score} dimBelow={data.dimBelow} />
 				</a>
 			</div>
@@ -284,8 +300,12 @@
 
 		{#if hasIncomingTrade && data.pendingIncomingTrade && canJoin}
 			<!-- Sahip bana bu app icin trade teklifi acmis. Modal'i kisaltacagiz. -->
-			<div class="mt-4 flex items-start gap-3 rounded-xl border border-tg-200 bg-tg-50 p-4 text-sm dark:border-tg-500/30 dark:bg-tg-500/10">
-				<span class="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-tg-100 text-tg-700 dark:bg-tg-500/20 dark:text-tg-300">
+			<div
+				class="mt-4 flex items-start gap-3 rounded-xl border border-tg-200 bg-tg-50 p-4 text-sm dark:border-tg-500/30 dark:bg-tg-500/10"
+			>
+				<span
+					class="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-tg-100 text-tg-700 dark:bg-tg-500/20 dark:text-tg-300"
+				>
 					<Icon name="swap" class="size-4" />
 				</span>
 				<div class="min-w-0 flex-1">
@@ -311,6 +331,35 @@
 				<p class="text-sm whitespace-pre-line text-zinc-600 dark:text-zinc-300">
 					{data.app.description}
 				</p>
+			</div>
+		{/if}
+
+		<!-- Sikayet et: giris yapmis, sahip olmayan kullanicilar icin -->
+		{#if canReport}
+			<div class="mt-6 flex justify-end border-t border-zinc-100 pt-4 dark:border-zinc-800">
+				{#if reportDone}
+					<span class="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+						✓ {m.app_report_done()}
+					</span>
+				{:else}
+					<button
+						type="button"
+						onclick={() => {
+							reportReason = '';
+							reporting = true;
+						}}
+						class="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-400 hover:text-red-600 dark:hover:text-red-400"
+					>
+						<svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+							<path
+								fill-rule="evenodd"
+								d="M3 2.75a.75.75 0 0 0-1.5 0v14.5a.75.75 0 0 0 1.5 0v-4.392l1.657-.348a6.449 6.449 0 0 1 4.271.572 7.948 7.948 0 0 0 5.965.524l2.078-.64A.75.75 0 0 0 18 12.25v-8.5a.75.75 0 0 0-.904-.734l-2.38.501a7.25 7.25 0 0 1-4.186-.363l-.502-.2a8.75 8.75 0 0 0-5.053-.439L3 2.49V2.75Z"
+								clip-rule="evenodd"
+							/>
+						</svg>
+						{m.app_report_btn()}
+					</button>
+				{/if}
 			</div>
 		{/if}
 	</div>
@@ -369,8 +418,12 @@
 							class="mt-0.5 accent-tg-600"
 						/>
 						<div class="min-w-0 flex-1">
-							<div class="flex items-center gap-2 text-sm font-medium text-zinc-900 dark:text-zinc-100">
-								<span class="inline-flex size-6 items-center justify-center rounded-md bg-tg-100 text-tg-700 dark:bg-tg-500/20 dark:text-tg-300">
+							<div
+								class="flex items-center gap-2 text-sm font-medium text-zinc-900 dark:text-zinc-100"
+							>
+								<span
+									class="inline-flex size-6 items-center justify-center rounded-md bg-tg-100 text-tg-700 dark:bg-tg-500/20 dark:text-tg-300"
+								>
 									<Icon name="swap" class="size-3.5" />
 								</span>
 								{m.join_mode_reciprocal()}
@@ -395,8 +448,12 @@
 					>
 						<input type="radio" bind:group={mode} value="free" class="mt-0.5 accent-tg-600" />
 						<div class="min-w-0 flex-1">
-							<div class="flex items-center gap-2 text-sm font-medium text-zinc-900 dark:text-zinc-100">
-								<span class="inline-flex size-6 items-center justify-center rounded-md bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
+							<div
+								class="flex items-center gap-2 text-sm font-medium text-zinc-900 dark:text-zinc-100"
+							>
+								<span
+									class="inline-flex size-6 items-center justify-center rounded-md bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300"
+								>
 									<Icon name="handshake" class="size-3.5" />
 								</span>
 								{m.join_mode_free()}
@@ -438,12 +495,7 @@
 								? 'border-tg-500 bg-tg-50/50 dark:border-tg-500/50 dark:bg-tg-500/10'
 								: 'border-zinc-200 hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800/50'}"
 						>
-							<input
-								type="radio"
-								bind:group={offeredAppId}
-								value={a.id}
-								class="accent-tg-600"
-							/>
+							<input type="radio" bind:group={offeredAppId} value={a.id} class="accent-tg-600" />
 							{#if a.iconUrl}
 								<img src={a.iconUrl} alt="" class="size-8 shrink-0 rounded-md object-cover" />
 							{:else}
@@ -453,7 +505,9 @@
 									{a.name.charAt(0)}
 								</div>
 							{/if}
-							<span class="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">{a.name}</span>
+							<span class="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100"
+								>{a.name}</span
+							>
 						</label>
 					{/each}
 				</div>
@@ -481,7 +535,9 @@
 			{:else if step === 'warn'}
 				<h2 class="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
 					{#if hasIncomingTrade}
-						<span class="inline-flex size-7 items-center justify-center rounded-lg bg-tg-100 text-tg-700 dark:bg-tg-500/20 dark:text-tg-300">
+						<span
+							class="inline-flex size-7 items-center justify-center rounded-lg bg-tg-100 text-tg-700 dark:bg-tg-500/20 dark:text-tg-300"
+						>
 							<Icon name="swap" class="size-4" />
 						</span>
 						{m.app_accept_trade()}
@@ -492,15 +548,25 @@
 
 				{#if hasIncomingTrade && data.pendingIncomingTrade}
 					<!-- Incoming trade -> ikili eslesme ozeti -->
-					<div class="mt-3 rounded-xl border border-tg-200 bg-tg-50/60 p-3 text-xs leading-relaxed text-tg-900 dark:border-tg-500/30 dark:bg-tg-500/10 dark:text-tg-200">
+					<div
+						class="mt-3 rounded-xl border border-tg-200 bg-tg-50/60 p-3 text-xs leading-relaxed text-tg-900 dark:border-tg-500/30 dark:bg-tg-500/10 dark:text-tg-200"
+					>
 						<div class="flex items-center justify-between gap-2">
 							<div class="min-w-0 flex-1">
-								<div class="text-[10px] font-medium tracking-wide text-tg-700 uppercase dark:text-tg-300">{m.join_trade_summary_youll_test()}</div>
+								<div
+									class="text-[10px] font-medium tracking-wide text-tg-700 uppercase dark:text-tg-300"
+								>
+									{m.join_trade_summary_youll_test()}
+								</div>
 								<div class="truncate font-medium">{data.app.name}</div>
 							</div>
 							<span class="text-base">↔</span>
 							<div class="min-w-0 flex-1 text-right">
-								<div class="text-[10px] font-medium tracking-wide text-tg-700 uppercase dark:text-tg-300">{m.join_trade_summary_theyll_test()}</div>
+								<div
+									class="text-[10px] font-medium tracking-wide text-tg-700 uppercase dark:text-tg-300"
+								>
+									{m.join_trade_summary_theyll_test()}
+								</div>
 								<div class="truncate font-medium">{data.pendingIncomingTrade.targetAppName}</div>
 							</div>
 						</div>
@@ -547,10 +613,74 @@
 						disabled={joining}
 						class="rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white hover:bg-tg-500 disabled:opacity-50"
 					>
-						{joining ? m.join_cta_pending() : hasIncomingTrade ? m.join_cta_match() : m.join_cta_confirm()}
+						{joining
+							? m.join_cta_pending()
+							: hasIncomingTrade
+								? m.join_cta_match()
+								: m.join_cta_confirm()}
 					</button>
 				</div>
 			{/if}
+		</div>
+	</div>
+{/if}
+
+<!-- Sikayet modali -->
+{#if reporting}
+	<div
+		class="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4"
+		role="presentation"
+		onclick={(e) => {
+			if (e.target === e.currentTarget) reporting = false;
+		}}
+	>
+		<div
+			class="w-full max-w-md rounded-t-2xl border border-zinc-200 bg-white p-5 sm:rounded-xl sm:p-6 dark:border-zinc-800 dark:bg-zinc-900"
+		>
+			<h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+				{m.app_report_title({ app: data.app.name })}
+			</h2>
+			<p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{m.app_report_desc()}</p>
+
+			<form
+				method="POST"
+				action="?/report"
+				use:enhance={() => {
+					return async ({ update, result }) => {
+						await update();
+						if (result.type === 'success') reporting = false;
+					};
+				}}
+				class="mt-4"
+			>
+				<input type="hidden" name="appId" value={data.app.id} />
+				<textarea
+					name="reason"
+					rows="4"
+					required
+					bind:value={reportReason}
+					placeholder={m.app_report_placeholder()}
+					class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-tg-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+				></textarea>
+				{#if reportError}
+					<p class="mt-2 text-sm text-red-600 dark:text-red-400">{reportError}</p>
+				{/if}
+				<div class="mt-4 flex flex-wrap justify-end gap-2">
+					<button
+						type="button"
+						onclick={() => (reporting = false)}
+						class="rounded-lg border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+					>
+						{m.join_cta_cancel()}
+					</button>
+					<button
+						type="submit"
+						class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
+					>
+						{m.app_report_submit()}
+					</button>
+				</div>
+			</form>
 		</div>
 	</div>
 {/if}

@@ -67,7 +67,7 @@ export interface AppInput {
  * Sayim: (status='completed') VEYA (en az bir submitted checkpoint var).
  * Kanit gondermemis 'active' commitment'lar slot tutmaz (kullanici onayi).
  */
-async function filledByApp(appIds: string[]): Promise<Map<string, number>> {
+export async function filledByApp(appIds: string[]): Promise<Map<string, number>> {
 	const map = new Map<string, number>();
 	if (appIds.length === 0) return map;
 	const rows = await db
@@ -279,7 +279,12 @@ function normalizeInstructions(input?: AppInput['instructions']) {
 function validateInput(input: AppInput): void {
 	if (!input.name?.trim()) throw new Error('Uygulama adı gerekli.');
 	if (!isValidUrl(input.appLink)) throw new Error('Geçerli bir Play Store linki gir.');
-	if (!isValidUrl(input.groupLink)) throw new Error('Geçerli bir Google Groups linki gir.');
+	if (!isGoogleGroupsUrl(input.groupLink))
+		throw new Error('Geçerli bir Google Groups linki gir (groups.google.com/g/...).');
+	// Paket adi verildiyse en az bir nokta iceren gecerli bir paket biciminde olmali.
+	const pkg = input.packageName?.trim();
+	if (pkg && !isValidPackageName(pkg))
+		throw new Error('Uygulama paket adı doğru değil (örn: com.example.app).');
 	if (input.iconUrl?.trim() && !isValidUrl(input.iconUrl))
 		throw new Error('Geçerli bir ikon URL gir (https://...).');
 	// Slot araligi: 12-20 (Play Store 12 zorunlu, 20 üstü bu projenin politikasi).
@@ -298,6 +303,25 @@ function isValidUrl(s: string | undefined): boolean {
 	} catch {
 		return false;
 	}
+}
+
+/** Link gecerli ve host'u groups.google.com mu? (Google Groups linki zorunlu.) */
+function isGoogleGroupsUrl(s: string | undefined): boolean {
+	if (!isValidUrl(s)) return false;
+	try {
+		const host = new URL(s!).hostname.toLowerCase();
+		return host === 'groups.google.com' || host.endsWith('.groups.google.com');
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * Android paket adi bicimi: en az bir nokta (xxx.yyy), her segment harfle baslar.
+ * Orn: com.example.app. Bos olmasi cagiran tarafta ayrica ele alinir.
+ */
+function isValidPackageName(s: string): boolean {
+	return /^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$/.test(s);
 }
 
 /** Yeni uygulama ekler. Anti-abuse: ilk tamamlanan taahhutten once max app limiti. */
