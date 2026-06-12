@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import * as m from '$lib/paraglide/messages';
 	import Icon from './Icon.svelte';
 
@@ -55,7 +54,9 @@
 			role="menu"
 			class="absolute right-0 z-50 mt-2 w-72 origin-top-right rounded-xl border border-zinc-200 bg-white p-1 shadow-lg ring-1 ring-black/5 dark:border-zinc-800 dark:bg-zinc-900 dark:ring-white/5"
 		>
-			<div class="px-3 py-2 text-xs font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
+			<div
+				class="px-3 py-2 text-xs font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400"
+			>
 				{m.notif_title()}
 			</div>
 
@@ -69,14 +70,18 @@
 						role="menuitem"
 						class="flex items-start gap-3 rounded-lg px-3 py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800"
 					>
-						<span class="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400">
+						<span
+							class="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400"
+						>
 							<Icon name="bell" class="size-4" />
 						</span>
 						<div class="min-w-0 flex-1">
 							<div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">
 								{m.notif_open_checkpoints({ count: notif.openCheckpoints })}
 							</div>
-							<p class="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{m.notif_open_checkpoints_body()}</p>
+							<p class="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+								{m.notif_open_checkpoints_body()}
+							</p>
 						</div>
 					</a>
 				{/if}
@@ -88,14 +93,18 @@
 						role="menuitem"
 						class="flex items-start gap-3 rounded-lg px-3 py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800"
 					>
-						<span class="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-tg-100 text-tg-700 dark:bg-tg-500/20 dark:text-tg-300">
+						<span
+							class="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-tg-100 text-tg-700 dark:bg-tg-500/20 dark:text-tg-300"
+						>
 							<Icon name="swap" class="size-4" />
 						</span>
 						<div class="min-w-0 flex-1">
 							<div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">
 								{m.notif_incoming_trades({ count: notif.trades })}
 							</div>
-							<p class="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{m.notif_incoming_trades_body()}</p>
+							<p class="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+								{m.notif_incoming_trades_body()}
+							</p>
 						</div>
 					</a>
 				{/if}

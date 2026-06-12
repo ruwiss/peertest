@@ -21,9 +21,12 @@
 			? (form.broadcast as { sent: number; total: number })
 			: null
 	);
-	// "Aksiyonlar" menusu + duyuru modali acik mi.
-	let actionsOpen = $state(false);
+	// App'e ozel bildirim basariyla gonderildi mi?
+	const notifiedOk = $derived(form && typeof form === 'object' && 'notified' in form);
+	// Herkese duyuru modali + app'e ozel bildirim modali.
 	let showBroadcast = $state(false);
+	let notifyTarget = $state<{ id: string; name: string } | null>(null);
+	let notifyMessage = $state('');
 
 	const appStatusLabel: Record<string, () => string> = {
 		active: m.app_status_active,
@@ -51,55 +54,8 @@
 </svelte:head>
 
 <section class="mx-auto max-w-5xl px-4 py-8">
-	<div class="mb-4 flex items-center justify-between gap-3">
+	<div class="mb-4">
 		<BackLink href="/admin" label={m.admin_user_back()} />
-
-		<!-- Admin aksiyon menusu (su an: tum kullanicilara duyuru) -->
-		<div class="relative">
-			<button
-				type="button"
-				onclick={() => (actionsOpen = !actionsOpen)}
-				class="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
-			>
-				{m.admin_actions_btn()}
-				<svg class="size-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-					<path
-						fill-rule="evenodd"
-						d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-						clip-rule="evenodd"
-					/>
-				</svg>
-			</button>
-
-			{#if actionsOpen}
-				<!-- Disari tiklayinca menuyu kapatan saydam katman -->
-				<button
-					type="button"
-					class="fixed inset-0 z-10 cursor-default"
-					aria-label="close"
-					onclick={() => (actionsOpen = false)}
-				></button>
-				<div
-					class="absolute right-0 z-20 mt-1 w-60 overflow-hidden rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-800 dark:bg-zinc-900"
-				>
-					<button
-						type="button"
-						onclick={() => {
-							actionsOpen = false;
-							showBroadcast = true;
-						}}
-						class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-800"
-					>
-						<svg class="size-4 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-							<path
-								d="M3.105 2.289a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.085l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.289Z"
-							/>
-						</svg>
-						{m.admin_broadcast_btn()}
-					</button>
-				</div>
-			{/if}
-		</div>
 	</div>
 
 	{#if broadcastResult}
@@ -107,6 +63,14 @@
 			class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300"
 		>
 			{m.admin_broadcast_sent({ sent: broadcastResult.sent, total: broadcastResult.total })}
+		</p>
+	{/if}
+
+	{#if notifiedOk}
+		<p
+			class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300"
+		>
+			{m.admin_app_notify_sent()}
 		</p>
 	{/if}
 
@@ -212,20 +176,52 @@
 								<SlotPips filled={a.filled} total={a.slotsTotal} />
 							</td>
 							<td class="p-3 font-mono text-xs text-zinc-500">{fmt(a.createdAt)}</td>
-							<td class="p-3 text-right">
-								<a
-									href="/admin/apps/{a.id}"
-									class="inline-flex items-center gap-1 rounded-lg border border-zinc-200 px-2.5 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-								>
-									{m.admin_app_view_testers()}
-									<svg class="size-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-										<path
-											fill-rule="evenodd"
-											d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.05 10 7.23 6.29a.75.75 0 1 1 1.04-1.08l4.39 4.25a.75.75 0 0 1 0 1.08l-4.39 4.25a.75.75 0 0 1-1.06-.02Z"
-											clip-rule="evenodd"
-										/>
-									</svg>
-								</a>
+							<td class="p-3">
+								<div class="flex flex-wrap items-center justify-end gap-1.5">
+									<!-- Herkese duyuru (global) -->
+									<button
+										type="button"
+										onclick={() => (showBroadcast = true)}
+										class="inline-flex items-center gap-1 rounded-lg border border-zinc-200 px-2 py-1 text-xs font-medium text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
+									>
+										<svg class="size-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+											<path
+												d="M3.105 2.289a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.085l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.289Z"
+											/>
+										</svg>
+										{m.admin_app_broadcast_all()}
+									</button>
+									<!-- Bu uygulamanin sahibine ozel bildirim -->
+									<button
+										type="button"
+										onclick={() => {
+											notifyTarget = { id: a.id, name: a.name };
+											notifyMessage = '';
+										}}
+										class="inline-flex items-center gap-1 rounded-lg border border-tg-200 bg-tg-50 px-2 py-1 text-xs font-medium text-tg-700 hover:bg-tg-100 dark:border-tg-500/30 dark:bg-tg-500/10 dark:text-tg-300 dark:hover:bg-tg-500/20"
+									>
+										<svg class="size-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+											<path
+												d="M3.105 2.289a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.085l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.289Z"
+											/>
+										</svg>
+										{m.admin_app_notify_btn()}
+									</button>
+									<!-- Testerlari gor -->
+									<a
+										href="/admin/apps/{a.id}"
+										class="inline-flex items-center gap-1 rounded-lg border border-zinc-200 px-2.5 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+									>
+										{m.admin_app_view_testers()}
+										<svg class="size-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+											<path
+												fill-rule="evenodd"
+												d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.05 10 7.23 6.29a.75.75 0 1 1 1.04-1.08l4.39 4.25a.75.75 0 0 1 0 1.08l-4.39 4.25a.75.75 0 0 1-1.06-.02Z"
+												clip-rule="evenodd"
+											/>
+										</svg>
+									</a>
+								</div>
 							</td>
 						</tr>
 					{/each}
@@ -357,6 +353,79 @@
 						class="inline-flex items-center gap-1.5 rounded-lg bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
 					>
 						{m.admin_broadcast_send()}
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+{/if}
+
+{#if notifyTarget}
+	<!-- App'e ozel bildirim: yalnizca bu uygulamanin sahibine DM. -->
+	<div
+		class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+		role="button"
+		tabindex="0"
+		onclick={(e) => {
+			if (e.target === e.currentTarget) notifyTarget = null;
+		}}
+		onkeydown={(e) => {
+			if (e.key === 'Escape') notifyTarget = null;
+		}}
+	>
+		<div
+			class="w-full max-w-lg rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800 dark:bg-zinc-900"
+		>
+			<h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+				{m.admin_app_notify_title({ app: notifyTarget.name })}
+			</h2>
+			<p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+				{m.admin_app_notify_desc({ app: notifyTarget.name, user: d.user.firstName })}
+			</p>
+
+			<form
+				method="POST"
+				action="?/notifyApp"
+				use:enhance={() => {
+					return async ({ update, result }) => {
+						await update();
+						if (result.type === 'success') notifyTarget = null;
+					};
+				}}
+				class="mt-4 space-y-4"
+			>
+				<input type="hidden" name="appId" value={notifyTarget.id} />
+				<div>
+					<label
+						for="notify-msg"
+						class="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-200"
+					>
+						{m.admin_app_notify_label()}
+					</label>
+					<textarea
+						id="notify-msg"
+						name="message"
+						rows="4"
+						required
+						bind:value={notifyMessage}
+						placeholder={m.admin_app_notify_placeholder()}
+						class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+					></textarea>
+				</div>
+
+				<div class="flex justify-end gap-2 pt-1">
+					<button
+						type="button"
+						onclick={() => (notifyTarget = null)}
+						class="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+					>
+						{m.admin_broadcast_cancel()}
+					</button>
+					<button
+						type="submit"
+						class="inline-flex items-center gap-1.5 rounded-lg bg-tg-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-tg-500"
+					>
+						{m.admin_app_notify_send()}
 					</button>
 				</div>
 			</form>

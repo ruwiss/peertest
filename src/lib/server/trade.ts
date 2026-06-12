@@ -97,10 +97,7 @@ export async function listMyTrades(userId: string): Promise<TradeRequestRow[]> {
  */
 export async function listTradesTowardsMe(userId: string): Promise<TradeRequestRow[]> {
 	// Benim app'lerimden birine yapilan istekler.
-	const myAppRows = await db
-		.select({ id: apps.id })
-		.from(apps)
-		.where(eq(apps.userId, userId));
+	const myAppRows = await db.select({ id: apps.id }).from(apps).where(eq(apps.userId, userId));
 	if (myAppRows.length === 0) return [];
 	const myAppIds = myAppRows.map((a) => a.id);
 
@@ -221,7 +218,8 @@ export async function createTradeRequest(
 			throw new Error(
 				'Trade eslesirken bir sorun olustu: ' +
 					(e as Error).message +
-					' (Karsi taraf zaten uye veya slot doldu.)'
+					' (Karsi taraf zaten uye veya slot doldu.)',
+				{ cause: e }
 			);
 		}
 
@@ -283,11 +281,7 @@ async function notifyTradeRequested(
 	offeredAppName: string
 ): Promise<void> {
 	const [reqRow, ownerRow] = await Promise.all([
-		db
-			.select({ firstName: users.firstName })
-			.from(users)
-			.where(eq(users.id, requesterId))
-			.limit(1),
+		db.select({ firstName: users.firstName }).from(users).where(eq(users.id, requesterId)).limit(1),
 		db
 			.select({
 				telegramId: users.telegramId,

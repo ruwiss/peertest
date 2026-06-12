@@ -583,6 +583,23 @@
 						<li>{m.join_warning_li_3()}</li>
 					</ul>
 				</div>
+				<div
+					class="mt-3 flex items-start gap-2 rounded-lg border border-tg-200 bg-tg-50 p-3 text-xs leading-relaxed text-tg-900 dark:border-tg-500/30 dark:bg-tg-500/10 dark:text-tg-200"
+				>
+					<svg
+						class="mt-0.5 size-4 shrink-0 text-tg-600 dark:text-tg-400"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+						aria-hidden="true"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a1 1 0 0 0 0 2v3a1 1 0 0 0 1 1h1a1 1 0 1 0 0-2v-3a1 1 0 0 0-1-1H9Z"
+							clip-rule="evenodd"
+						/>
+					</svg>
+					<span>{m.join_warning_first_proof()}</span>
+				</div>
 				{#if joinError}
 					<p class="mt-3 text-sm text-red-600 dark:text-red-400">{joinError}</p>
 				{/if}

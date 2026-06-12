@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Icon from './Icon.svelte';
 
 	interface Props {
 		src: string;
@@ -26,7 +25,6 @@
 <svelte:window onkeydown={onKey} />
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
 	role="dialog"
 	aria-modal="true"
@@ -60,16 +58,21 @@
 		aria-label="Yeni sekmede aç"
 		class="absolute top-4 right-16 inline-flex size-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-white/20"
 	>
-		<svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+		<svg
+			class="size-5"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			aria-hidden="true"
+		>
 			<path d="M14 3h7v7" />
 			<path d="M21 3 11 13" />
 			<path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5" />
 		</svg>
 	</a>
 
-	<img
-		{src}
-		{alt}
-		class="max-h-[92vh] max-w-[92vw] rounded-lg object-contain shadow-2xl"
-	/>
+	<img {src} {alt} class="max-h-[92vh] max-w-[92vw] rounded-lg object-contain shadow-2xl" />
 </div>

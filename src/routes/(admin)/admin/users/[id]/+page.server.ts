@@ -1,6 +1,6 @@
 import { error, fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { getUserDetail } from '$lib/server/admin';
+import { getUserDetail, sendAppNotice } from '$lib/server/admin';
 import { broadcastCustom } from '$lib/server/broadcast';
 
 // Admin duyurusu botu baglamis TUM kullanicilara batch'ler halinde gonderilir;
@@ -24,6 +24,21 @@ export const actions: Actions = {
 		try {
 			const res = await broadcastCustom({ tr, en });
 			return { success: true as const, broadcast: res };
+		} catch (e) {
+			return fail(400, { message: (e as Error).message });
+		}
+	},
+
+	// Admin: belirli bir uygulamanin sahibine, o uygulama hakkinda ozel DM gonderir.
+	notifyApp: async ({ request }) => {
+		const fd = await request.formData();
+		const appId = String(fd.get('appId') ?? '');
+		const message = String(fd.get('message') ?? '').trim();
+		if (!appId) return fail(400, { message: 'Uygulama seçilmedi.' });
+		if (!message) return fail(400, { message: 'Mesaj boş olamaz.' });
+		try {
+			await sendAppNotice(appId, message);
+			return { success: true as const, notified: true as const };
 		} catch (e) {
 			return fail(400, { message: (e as Error).message });
 		}

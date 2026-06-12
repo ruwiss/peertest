@@ -334,6 +334,36 @@ export async function adminDeleteApp(appId: string, reason?: string): Promise<vo
 	}
 }
 
+/**
+ * Admin: belirli bir uygulamanin sahibine, o uygulama hakkinda ozel bildirim DM'i gonderir.
+ * Mesaj sahibin diline gore "X uygulamaniz hakkinda: <mesaj>" sablonuyla sarilir.
+ */
+export async function sendAppNotice(appId: string, message: string): Promise<void> {
+	const msg = message?.trim();
+	if (!msg) throw new Error('Mesaj boş olamaz.');
+
+	const rows = await db
+		.select({
+			name: apps.name,
+			ownerTelegramId: users.telegramId,
+			ownerLocale: users.locale,
+			ownerBotStarted: users.botStarted
+		})
+		.from(apps)
+		.innerJoin(users, eq(apps.userId, users.id))
+		.where(eq(apps.id, appId))
+		.limit(1);
+	if (rows.length === 0) throw new Error('Uygulama bulunamadı.');
+	const a = rows[0];
+	if (!a.ownerBotStarted) throw new Error('Kullanıcı botu başlatmadığı için DM gönderilemiyor.');
+
+	const ok = await sendTemplate(a.ownerTelegramId, 'app_notice_from_admin', a.ownerLocale, {
+		app: a.name,
+		mesaj: msg
+	});
+	if (!ok) throw new Error('Bildirim gönderilemedi.');
+}
+
 /** Admin manuel unfreeze: kullanicinin tum frozen app'lerini aktiflestirir. */
 export async function manualUnfreeze(userId: string): Promise<number> {
 	const r = await db

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import * as m from '$lib/paraglide/messages';
 	import type { PageData } from './$types';
 	import AppRow from '$lib/components/AppRow.svelte';
@@ -11,7 +12,7 @@
 	let searchTimer: ReturnType<typeof setTimeout> | undefined;
 
 	function navigate(nextQ: string, nextPage: number) {
-		const params = new URLSearchParams();
+		const params = new SvelteURLSearchParams();
 		if (nextQ.trim()) params.set('q', nextQ.trim());
 		if (nextPage > 1) params.set('page', String(nextPage));
 		const qs = params.toString();
@@ -83,7 +84,16 @@
 				aria-label={m.home_search_clear()}
 				class="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-md p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
 			>
-				<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<svg
+					class="size-4"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
 					<path d="M18 6 6 18M6 6l12 12" />
 				</svg>
 			</button>
@@ -101,11 +111,7 @@
 			class="rounded-xl border border-dashed border-zinc-200 bg-zinc-50 p-10 text-center dark:border-zinc-800 dark:bg-zinc-900/50"
 		>
 			<p class="text-sm text-zinc-500">
-				{data.q
-					? m.home_no_results()
-					: data.loggedIn
-						? m.home_empty_logged()
-						: m.home_empty_anon()}
+				{data.q ? m.home_no_results() : data.loggedIn ? m.home_empty_logged() : m.home_empty_anon()}
 			</p>
 		</div>
 	{:else}
