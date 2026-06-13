@@ -52,12 +52,12 @@
 </script>
 
 <div
-	class="rounded-xl border bg-white p-5 dark:bg-zinc-900 {hasOpenWindow
-		? 'border-l-4 border-zinc-200 border-l-amber-400 dark:border-zinc-800'
-		: 'border-zinc-200 dark:border-zinc-800'}"
+	class="rounded-2xl border bg-white p-5 dark:bg-zinc-900 {hasOpenWindow
+		? 'border-l-4 border-zinc-200/80 border-l-amber-400 dark:border-zinc-800'
+		: 'border-zinc-200/80 dark:border-zinc-800'}"
 >
 	<div class="mb-5 flex items-center justify-between gap-3">
-		<div class="min-w-0 truncate font-medium text-zinc-900 dark:text-zinc-100">
+		<div class="min-w-0 truncate text-lg font-semibold text-zinc-900 dark:text-zinc-100">
 			{commitment.app.name}
 		</div>
 		<StatusBadge

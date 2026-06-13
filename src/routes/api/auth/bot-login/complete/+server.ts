@@ -19,7 +19,7 @@ export const GET: RequestHandler = async (event) => {
 			not_found: 'Giriş bağlantısı geçersiz.',
 			expired: 'Giriş bağlantısının süresi doldu. Lütfen tekrar başlat.',
 			already_used: 'Bu giriş bağlantısı zaten kullanılmış.',
-			not_claimed: 'Bağlantı henüz onaylanmamış. Telegram\'da Start butonuna bas.'
+			not_claimed: "Bağlantı henüz onaylanmamış. Telegram'da Start butonuna bas."
 		};
 		error(400, messages[result.reason]);
 	}

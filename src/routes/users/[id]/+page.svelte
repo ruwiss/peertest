@@ -28,22 +28,34 @@
 	<title>{p.firstName} · {m.app_name()}</title>
 </svelte:head>
 
-<section class="mx-auto max-w-5xl px-4 py-8">
+<section class="mx-auto max-w-4xl px-4 py-8">
 	<div class="mb-4">
-		<BackLink href="/" label={m.app_detail_back()} />
+		<BackLink href="/apps" label={m.app_detail_back()} />
 	</div>
 
 	<!-- Profil basligi -->
-	<div class="overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-		<div class="relative h-24 bg-gradient-to-br from-tg-500/20 via-tg-300/10 to-emerald-300/10 dark:from-tg-500/15 dark:to-emerald-500/10">
-			<div class="absolute -top-px right-0 left-0 h-px bg-gradient-to-r from-transparent via-tg-300/40 to-transparent"></div>
+	<div
+		class="overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
+	>
+		<div
+			class="relative h-24 bg-gradient-to-br from-tg-500/20 via-tg-300/10 to-emerald-300/10 dark:from-tg-500/15 dark:to-emerald-500/10"
+		>
+			<div
+				class="absolute -top-px right-0 left-0 h-px bg-gradient-to-r from-transparent via-tg-300/40 to-transparent"
+			></div>
 		</div>
 		<div class="-mt-12 px-6 pb-6">
 			<div class="flex flex-wrap items-end gap-4">
 				{#if p.avatarUrl}
-					<img src={p.avatarUrl} alt="" class="size-24 rounded-2xl border-4 border-white object-cover shadow-sm dark:border-zinc-900" />
+					<img
+						src={p.avatarUrl}
+						alt=""
+						class="size-24 rounded-2xl border-4 border-white object-cover shadow-sm dark:border-zinc-900"
+					/>
 				{:else}
-					<div class="flex size-24 items-center justify-center rounded-2xl border-4 border-white bg-zinc-100 text-3xl font-semibold text-zinc-500 shadow-sm dark:border-zinc-900 dark:bg-zinc-800 dark:text-zinc-300">
+					<div
+						class="flex size-24 items-center justify-center rounded-2xl border-4 border-white bg-zinc-100 text-3xl font-semibold text-zinc-500 shadow-sm dark:border-zinc-900 dark:bg-zinc-800 dark:text-zinc-300"
+					>
 						{p.firstName.charAt(0)}
 					</div>
 				{/if}
@@ -64,29 +76,53 @@
 							class="inline-flex items-center gap-2 rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-tg-500"
 						>
 							<svg class="size-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-								<path d="m22 2-7 20-4-9-9-4 20-7Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
-								<path d="M22 2 11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none" />
+								<path
+									d="m22 2-7 20-4-9-9-4 20-7Z"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linejoin="round"
+								/>
+								<path
+									d="M22 2 11 13"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									fill="none"
+								/>
 							</svg>
 							{m.profile_telegram_cta()}
 						</a>
 					{:else}
-						<span class="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 px-4 py-2 text-sm text-zinc-400 dark:border-zinc-700">
+						<span
+							class="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 px-4 py-2 text-sm text-zinc-400 dark:border-zinc-700"
+						>
 							{m.profile_no_username()}
 						</span>
 					{/if}
 				</div>
 			</div>
 
-			<dl class="mt-6 grid grid-cols-3 gap-4 border-t border-zinc-100 pt-5 text-sm dark:border-zinc-800">
+			<dl
+				class="mt-6 grid grid-cols-3 gap-4 border-t border-zinc-100 pt-5 text-sm dark:border-zinc-800"
+			>
 				<div>
 					<dt class="text-xs text-zinc-400 uppercase">{m.profile_score()}</dt>
-					<dd class="mt-1 font-mono text-lg {p.score < 0 ? 'text-red-600' : p.score < 50 ? 'text-amber-600' : 'text-zinc-900 dark:text-zinc-100'}">
+					<dd
+						class="mt-1 font-mono text-lg {p.score < 0
+							? 'text-red-600'
+							: p.score < 50
+								? 'text-amber-600'
+								: 'text-zinc-900 dark:text-zinc-100'}"
+					>
 						{p.score}
 					</dd>
 				</div>
 				<div>
 					<dt class="text-xs text-zinc-400 uppercase">{m.profile_completed()}</dt>
-					<dd class="mt-1 font-mono text-lg text-zinc-900 dark:text-zinc-100">{p.completedCount}</dd>
+					<dd class="mt-1 font-mono text-lg text-zinc-900 dark:text-zinc-100">
+						{p.completedCount}
+					</dd>
 				</div>
 				<div>
 					<dt class="text-xs text-zinc-400 uppercase">{m.profile_member_since()}</dt>
@@ -101,7 +137,9 @@
 		{m.profile_apps_title()}
 	</h2>
 	{#if p.apps.length === 0}
-		<p class="rounded-xl border border-dashed border-zinc-200 p-6 text-center text-sm text-zinc-500 dark:border-zinc-800">
+		<p
+			class="rounded-xl border border-dashed border-zinc-200 p-6 text-center text-sm text-zinc-500 dark:border-zinc-800"
+		>
 			{m.profile_apps_empty()}
 		</p>
 	{:else}
@@ -114,7 +152,9 @@
 					{#if app.iconUrl}
 						<img src={app.iconUrl} alt="" class="size-10 shrink-0 rounded-lg object-cover" />
 					{:else}
-						<div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-sm font-medium text-zinc-400 dark:bg-zinc-800">
+						<div
+							class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-sm font-medium text-zinc-400 dark:bg-zinc-800"
+						>
 							{app.name.charAt(0)}
 						</div>
 					{/if}

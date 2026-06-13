@@ -12,9 +12,10 @@
 		'w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-tg-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100';
 	const labelCls = 'mb-1 block text-xs font-medium text-zinc-700 dark:text-zinc-300';
 	const cardCls =
-		'rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900';
+		'rounded-2xl border border-zinc-200/70 bg-white shadow-soft dark:shadow-none p-5 sm:p-6 dark:border-zinc-800 dark:bg-zinc-900';
+	const cardTitle = 'text-lg font-semibold text-zinc-900 dark:text-zinc-100';
 	const saveBtn =
-		'rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white hover:bg-tg-500';
+		'rounded-full bg-tg-600 px-5 py-2 text-sm font-semibold text-white shadow-soft transition-all hover:bg-tg-500 hover:shadow-soft-lg active:scale-95 dark:shadow-none';
 
 	let testBusy = $state(false);
 	let testResult = $state<{ ok: boolean; message: string; url?: string } | null>(null);
@@ -61,14 +62,14 @@
 
 <svelte:head><title>{m.admin_settings_title()} · {m.admin_title()}</title></svelte:head>
 
-<section class="mx-auto max-w-5xl px-4 py-8">
+<section class="mx-auto max-w-4xl px-4 py-8">
 	<div class="mb-4">
 		<BackLink href="/admin" label={m.admin_back()} />
 	</div>
-	<h1 class="mb-2 text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+	<h1 class="mt-5 mb-2 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
 		{m.admin_settings_title()}
 	</h1>
-	<p class="mb-6 text-sm text-zinc-500">{m.admin_settings_desc()}</p>
+	<p class="mb-8 text-sm text-zinc-500">{m.admin_settings_desc()}</p>
 
 	{#if errMsg}
 		<p
@@ -82,7 +83,7 @@
 		<!-- Skor -->
 		<form method="POST" action="?/save_score" use:enhance class={cardCls}>
 			<div class="mb-4 flex items-center justify-between">
-				<h2 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+				<h2 class={cardTitle}>
 					{m.admin_settings_label_score()}
 				</h2>
 				{#if flashFor('score')}
@@ -92,23 +93,58 @@
 			<div class="grid gap-3 sm:grid-cols-2">
 				<div>
 					<label class={labelCls} for="score-start">{m.admin_settings_field_score_start()}</label>
-					<input id="score-start" name="start" type="number" value={data.score.start} class={inputCls} />
+					<input
+						id="score-start"
+						name="start"
+						type="number"
+						value={data.score.start}
+						class={inputCls}
+					/>
 				</div>
 				<div>
-					<label class={labelCls} for="score-miss">{m.admin_settings_field_score_missPenalty()}</label>
-					<input id="score-miss" name="missPenalty" type="number" value={data.score.missPenalty} class={inputCls} />
+					<label class={labelCls} for="score-miss"
+						>{m.admin_settings_field_score_missPenalty()}</label
+					>
+					<input
+						id="score-miss"
+						name="missPenalty"
+						type="number"
+						value={data.score.missPenalty}
+						class={inputCls}
+					/>
 				</div>
 				<div>
-					<label class={labelCls} for="score-reward">{m.admin_settings_field_score_completeReward()}</label>
-					<input id="score-reward" name="completeReward" type="number" value={data.score.completeReward} class={inputCls} />
+					<label class={labelCls} for="score-reward"
+						>{m.admin_settings_field_score_completeReward()}</label
+					>
+					<input
+						id="score-reward"
+						name="completeReward"
+						type="number"
+						value={data.score.completeReward}
+						class={inputCls}
+					/>
 				</div>
 				<div>
 					<label class={labelCls} for="score-dim">{m.admin_settings_field_score_dimBelow()}</label>
-					<input id="score-dim" name="dimBelow" type="number" value={data.score.dimBelow} class={inputCls} />
+					<input
+						id="score-dim"
+						name="dimBelow"
+						type="number"
+						value={data.score.dimBelow}
+						class={inputCls}
+					/>
 				</div>
 				<div class="sm:col-span-2">
-					<label class={labelCls} for="score-hide">{m.admin_settings_field_score_hideBelow()}</label>
-					<input id="score-hide" name="hideBelow" type="number" value={data.score.hideBelow} class={inputCls} />
+					<label class={labelCls} for="score-hide">{m.admin_settings_field_score_hideBelow()}</label
+					>
+					<input
+						id="score-hide"
+						name="hideBelow"
+						type="number"
+						value={data.score.hideBelow}
+						class={inputCls}
+					/>
 				</div>
 			</div>
 			<div class="mt-4 flex justify-end">
@@ -119,7 +155,7 @@
 		<!-- Limits -->
 		<form method="POST" action="?/save_limits" use:enhance class={cardCls}>
 			<div class="mb-4 flex items-center justify-between">
-				<h2 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+				<h2 class={cardTitle}>
 					{m.admin_settings_label_limits()}
 				</h2>
 				{#if flashFor('limits')}
@@ -128,15 +164,38 @@
 			</div>
 			<div class="space-y-3">
 				<div>
-					<label class={labelCls} for="lim-slots">{m.admin_settings_field_limits_defaultSlotsTotal()}</label>
-					<input id="lim-slots" name="defaultSlotsTotal" type="number" min="1" value={data.limits.defaultSlotsTotal} class={inputCls} />
+					<label class={labelCls} for="lim-slots"
+						>{m.admin_settings_field_limits_defaultSlotsTotal()}</label
+					>
+					<input
+						id="lim-slots"
+						name="defaultSlotsTotal"
+						type="number"
+						min="1"
+						value={data.limits.defaultSlotsTotal}
+						class={inputCls}
+					/>
 				</div>
 				<div>
-					<label class={labelCls} for="lim-max">{m.admin_settings_field_limits_maxAppsBeforeFirstComplete()}</label>
-					<input id="lim-max" name="maxAppsBeforeFirstComplete" type="number" min="0" value={data.limits.maxAppsBeforeFirstComplete} class={inputCls} />
+					<label class={labelCls} for="lim-max"
+						>{m.admin_settings_field_limits_maxAppsBeforeFirstComplete()}</label
+					>
+					<input
+						id="lim-max"
+						name="maxAppsBeforeFirstComplete"
+						type="number"
+						min="0"
+						value={data.limits.maxAppsBeforeFirstComplete}
+						class={inputCls}
+					/>
 				</div>
 				<label class="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
-					<input type="checkbox" name="rejoinSameAppAfterCancel" checked={data.limits.rejoinSameAppAfterCancel} class="size-4 rounded border-zinc-300 text-tg-600 focus:ring-tg-500" />
+					<input
+						type="checkbox"
+						name="rejoinSameAppAfterCancel"
+						checked={data.limits.rejoinSameAppAfterCancel}
+						class="size-4 rounded border-zinc-300 text-tg-600 focus:ring-tg-500"
+					/>
 					{m.admin_settings_field_limits_rejoinSameAppAfterCancel()}
 				</label>
 			</div>
@@ -148,7 +207,7 @@
 		<!-- Cron -->
 		<form method="POST" action="?/save_cron" use:enhance class={cardCls}>
 			<div class="mb-4 flex items-center justify-between">
-				<h2 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+				<h2 class={cardTitle}>
 					{m.admin_settings_label_cron()}
 				</h2>
 				{#if flashFor('cron')}
@@ -158,11 +217,28 @@
 			<div class="grid gap-3 sm:grid-cols-2">
 				<div>
 					<label class={labelCls} for="cron-hour">{m.admin_settings_field_cron_runHourUTC()}</label>
-					<input id="cron-hour" name="runHourUTC" type="number" min="0" max="23" value={data.cron.runHourUTC} class={inputCls} />
+					<input
+						id="cron-hour"
+						name="runHourUTC"
+						type="number"
+						min="0"
+						max="23"
+						value={data.cron.runHourUTC}
+						class={inputCls}
+					/>
 				</div>
 				<div>
-					<label class={labelCls} for="cron-lead">{m.admin_settings_field_cron_reminderLeadHours()}</label>
-					<input id="cron-lead" name="reminderLeadHours" type="number" min="0" value={data.cron.reminderLeadHours} class={inputCls} />
+					<label class={labelCls} for="cron-lead"
+						>{m.admin_settings_field_cron_reminderLeadHours()}</label
+					>
+					<input
+						id="cron-lead"
+						name="reminderLeadHours"
+						type="number"
+						min="0"
+						value={data.cron.reminderLeadHours}
+						class={inputCls}
+					/>
 				</div>
 			</div>
 			<div class="mt-4 flex justify-end">
@@ -173,7 +249,7 @@
 		<!-- Windows -->
 		<form method="POST" action="?/save_windows" use:enhance class={cardCls}>
 			<div class="mb-4 flex items-center justify-between">
-				<h2 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+				<h2 class={cardTitle}>
 					{m.admin_settings_label_checkpoint()}
 				</h2>
 				{#if flashFor('windows')}
@@ -259,13 +335,20 @@
 
 		{#if upload.provider === 'prntscr'}
 			<details class="mt-4">
-				<summary class="cursor-pointer text-xs font-medium text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
+				<summary
+					class="cursor-pointer text-xs font-medium text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+				>
 					Advanced (prntscr)
 				</summary>
 				<div class="mt-3 grid gap-3 sm:grid-cols-2">
 					<div>
 						<label class={labelCls} for="up-ua">{m.admin_upload_userAgent()}</label>
-						<input id="up-ua" name="userAgent" bind:value={upload.userAgent} class="{inputCls} font-mono text-xs" />
+						<input
+							id="up-ua"
+							name="userAgent"
+							bind:value={upload.userAgent}
+							class="{inputCls} font-mono text-xs"
+						/>
 					</div>
 					<div>
 						<label class={labelCls} for="up-dpi">{m.admin_upload_dpi()}</label>
@@ -273,19 +356,39 @@
 					</div>
 					<div>
 						<label class={labelCls} for="up-rx-st">{m.admin_upload_regex_status()}</label>
-						<input id="up-rx-st" name="regex_status" bind:value={upload.regex.status} class="{inputCls} font-mono text-xs" />
+						<input
+							id="up-rx-st"
+							name="regex_status"
+							bind:value={upload.regex.status}
+							class="{inputCls} font-mono text-xs"
+						/>
 					</div>
 					<div>
 						<label class={labelCls} for="up-rx-sh">{m.admin_upload_regex_share()}</label>
-						<input id="up-rx-sh" name="regex_share" bind:value={upload.regex.share} class="{inputCls} font-mono text-xs" />
+						<input
+							id="up-rx-sh"
+							name="regex_share"
+							bind:value={upload.regex.share}
+							class="{inputCls} font-mono text-xs"
+						/>
 					</div>
 					<div>
 						<label class={labelCls} for="up-rx-er">{m.admin_upload_regex_error()}</label>
-						<input id="up-rx-er" name="regex_error" bind:value={upload.regex.error} class="{inputCls} font-mono text-xs" />
+						<input
+							id="up-rx-er"
+							name="regex_error"
+							bind:value={upload.regex.error}
+							class="{inputCls} font-mono text-xs"
+						/>
 					</div>
 					<div>
 						<label class={labelCls} for="up-rx-cdn">{m.admin_upload_regex_cdnImg()}</label>
-						<input id="up-rx-cdn" name="regex_cdnImg" bind:value={upload.regex.cdnImg} class="{inputCls} font-mono text-xs" />
+						<input
+							id="up-rx-cdn"
+							name="regex_cdnImg"
+							bind:value={upload.regex.cdnImg}
+							class="{inputCls} font-mono text-xs"
+						/>
 					</div>
 				</div>
 			</details>
@@ -300,10 +403,16 @@
 		{/if}
 
 		{#if testResult}
-			<div class="mt-4 rounded-lg border p-3 text-sm {testResult.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300' : 'border-red-200 bg-red-50 text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300'}">
+			<div
+				class="mt-4 rounded-lg border p-3 text-sm {testResult.ok
+					? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300'
+					: 'border-red-200 bg-red-50 text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300'}"
+			>
 				{testResult.message}
 				{#if testResult.url}
-					<a href={testResult.url} target="_blank" rel="noopener noreferrer" class="ml-2 underline">URL</a>
+					<a href={testResult.url} target="_blank" rel="noopener noreferrer" class="ml-2 underline"
+						>URL</a
+					>
 				{/if}
 			</div>
 		{/if}
@@ -334,19 +443,32 @@
 		<div class="grid gap-6 md:grid-cols-2">
 			{#each [{ loc: 'tr', label: m.admin_settings_instructions_tr(), v: data.instructions.tr }, { loc: 'en', label: m.admin_settings_instructions_en(), v: data.instructions.en }] as col (col.loc)}
 				<div>
-					<div class="mb-2 text-xs font-semibold tracking-wider text-zinc-500 uppercase">{col.label}</div>
+					<div class="mb-2 text-xs font-semibold tracking-wider text-zinc-500 uppercase">
+						{col.label}
+					</div>
 					<div class="space-y-3">
 						<div>
 							<label class={labelCls} for="ins-{col.loc}-joined">{m.checkpoint_joined()}</label>
-							<textarea id="ins-{col.loc}-joined" name="{col.loc}_joined" rows="2" class={inputCls}>{col.v.joined}</textarea>
+							<textarea id="ins-{col.loc}-joined" name="{col.loc}_joined" rows="2" class={inputCls}
+								>{col.v.joined}</textarea
+							>
 						</div>
 						<div>
 							<label class={labelCls} for="ins-{col.loc}-active">{m.checkpoint_active()}</label>
-							<textarea id="ins-{col.loc}-active" name="{col.loc}_active" rows="2" class={inputCls}>{col.v.active}</textarea>
+							<textarea id="ins-{col.loc}-active" name="{col.loc}_active" rows="2" class={inputCls}
+								>{col.v.active}</textarea
+							>
 						</div>
 						<div>
-							<label class={labelCls} for="ins-{col.loc}-completed">{m.checkpoint_completed()}</label>
-							<textarea id="ins-{col.loc}-completed" name="{col.loc}_completed" rows="2" class={inputCls}>{col.v.completed}</textarea>
+							<label class={labelCls} for="ins-{col.loc}-completed"
+								>{m.checkpoint_completed()}</label
+							>
+							<textarea
+								id="ins-{col.loc}-completed"
+								name="{col.loc}_completed"
+								rows="2"
+								class={inputCls}>{col.v.completed}</textarea
+							>
 						</div>
 					</div>
 				</div>

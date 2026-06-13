@@ -15,6 +15,19 @@
 	--color-tg-700: #1782b9;
 	--color-tg-800: #126e9d;
 	--color-tg-900: #0d5a82;
+
+	/* Tipografi: Inter — modern, net UI fontu. */
+	--font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+	/* Yumusak modern radius olcegi — kartlar, butonlar ve inputlar daha yuvarlak. */
+	--radius-lg: 0.7rem;
+	--radius-xl: 1rem;
+	--radius-2xl: 1.25rem;
+	--radius-3xl: 1.75rem;
+
+	/* Yumusak, dusuk-kontrast golgeler (yumusak modern hissin temeli). */
+	--shadow-soft: 0 1px 2px rgba(24, 24, 27, 0.04), 0 6px 16px -4px rgba(24, 24, 27, 0.08);
+	--shadow-soft-lg: 0 2px 4px rgba(24, 24, 27, 0.04), 0 16px 40px -8px rgba(24, 24, 27, 0.12);
 }
 
 :root {
@@ -28,39 +41,33 @@ html {
 	scroll-behavior: smooth;
 }
 
-/* Masaustunde sabit %110 zoom: kullanicinin tercih ettigi okuma boyutu. */
-/* Mobilde 100% kalir; ekran zaten kucuk, ekstra zoom tasmaya yol acar. */
-@media (min-width: 768px) {
-	:root {
-		zoom: 1.1;
-	}
-}
-
 body {
 	@apply bg-zinc-50 text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100;
-	font-family:
-		'Inter',
-		ui-sans-serif,
-		system-ui,
-		-apple-system,
-		'Segoe UI',
-		sans-serif;
-	/* Mevcut bg-rengi UZERINE iki kat layered desen: */
-	/* 1) Kucuk nokta izgara (zar zor gorunur)  */
-	/* 2) Cok genis radial brand glow (sayfaya derinlik katar) */
-	background-image:
-		radial-gradient(circle at 50% -10%, rgba(42, 171, 238, 0.10), transparent 55%),
-		radial-gradient(circle at 1px 1px, rgba(24, 24, 27, 0.09) 1px, transparent 0);
-	background-size:
-		auto,
-		22px 22px;
+	font-family: var(--font-sans);
+	/* Plus Jakarta hafif sik harf araligi ile daha toparli durur. */
+	letter-spacing: -0.011em;
+	/* Cok yumusak, genis radial brand glow — atmosfer, gurultu yok. */
+	background-image: radial-gradient(circle at 50% -15%, rgba(42, 171, 238, 0.08), transparent 60%);
 	background-attachment: fixed;
-	background-repeat: no-repeat, repeat;
+	background-repeat: no-repeat;
 }
 :root.dark body {
-	background-image:
-		radial-gradient(circle at 50% -10%, rgba(42, 171, 238, 0.12), transparent 55%),
-		radial-gradient(circle at 1px 1px, rgba(244, 244, 245, 0.10) 1px, transparent 0);
+	background-image: radial-gradient(circle at 50% -15%, rgba(42, 171, 238, 0.12), transparent 60%);
+}
+
+/* Basliklar: biraz daha siki harf araligi + agir font, modern netlik. */
+h1,
+h2,
+h3 {
+	letter-spacing: -0.025em;
+}
+
+/* Yumusak golge yardimci siniflari (tailwind shadow-soft / shadow-soft-lg). */
+.shadow-soft {
+	box-shadow: var(--shadow-soft);
+}
+.shadow-soft-lg {
+	box-shadow: var(--shadow-soft-lg);
 }
 
 /* Erisilebilir, marka renginde odak halkasi - sadece buton/link/tabindex elementleri. */
@@ -102,5 +109,128 @@ img {
 	}
 	to {
 		opacity: 1;
+	}
+}
+
+/* ===== Tatli animasyonlar: sayfa girisleri, yukleme, mikro-etkilesimler ===== */
+
+/* Sayfa/blok girisi: asagidan yumusak yukselerek belirir. */
+@keyframes fade-up {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+.animate-fade-up {
+	animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Basit fade (transform yok). */
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+.animate-fade-in {
+	animation: fade-in 0.4s ease-out both;
+}
+
+/* Olcek + fade: modallar/kartlar icin pop. */
+@keyframes pop-in {
+	from {
+		opacity: 0;
+		transform: scale(0.96);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+.animate-pop-in {
+	animation: pop-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Stagger: ardisik cocuklar gecikmeli belirir (liste/grid girisleri). */
+.stagger > * {
+	animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.stagger > *:nth-child(1) {
+	animation-delay: 0.04s;
+}
+.stagger > *:nth-child(2) {
+	animation-delay: 0.08s;
+}
+.stagger > *:nth-child(3) {
+	animation-delay: 0.12s;
+}
+.stagger > *:nth-child(4) {
+	animation-delay: 0.16s;
+}
+.stagger > *:nth-child(5) {
+	animation-delay: 0.2s;
+}
+.stagger > *:nth-child(6) {
+	animation-delay: 0.24s;
+}
+.stagger > *:nth-child(7) {
+	animation-delay: 0.28s;
+}
+.stagger > *:nth-child(8) {
+	animation-delay: 0.32s;
+}
+.stagger > *:nth-child(n + 9) {
+	animation-delay: 0.36s;
+}
+
+/* Skeleton shimmer: yuklenirken kayan parlama. */
+.skeleton {
+	background:
+		linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent),
+		var(--color-zinc-200, #e4e4e7);
+	background-size: 200% 100%;
+	background-repeat: no-repeat;
+	animation: shimmer 1.4s ease-in-out infinite;
+}
+:root.dark .skeleton {
+	background:
+		linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent),
+		var(--color-zinc-800, #27272a);
+	background-size: 200% 100%;
+	background-repeat: no-repeat;
+}
+@keyframes shimmer {
+	from {
+		background-position: -150% 0;
+	}
+	to {
+		background-position: 150% 0;
+	}
+}
+
+/* Buton/satir hover: hafif yukselme (yumusak modern dokunus). */
+.lift {
+	transition:
+		transform 0.18s ease,
+		box-shadow 0.18s ease;
+}
+.lift:hover {
+	transform: translateY(-1px);
+}
+
+/* Erisilebilirlik: hareketi azalt tercihi varsa tum animasyonlari kis. */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
 	}
 }

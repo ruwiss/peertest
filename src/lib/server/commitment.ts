@@ -160,10 +160,7 @@ export async function adminCancelCommitment(commitmentId: string): Promise<void>
 	const { commitment, app } = rows[0];
 	if (commitment.status !== 'active') throw new Error('Bu taahhüt zaten kapanmış.');
 
-	await db
-		.update(commitments)
-		.set({ status: 'cancelled' })
-		.where(eq(commitments.id, commitmentId));
+	await db.update(commitments).set({ status: 'cancelled' }).where(eq(commitments.id, commitmentId));
 
 	const tester = await db
 		.select({
@@ -252,10 +249,7 @@ export async function cancelCommitment(userId: string, commitmentId: string): Pr
  * Amac: Play Store kapali test'in "kesintisiz 14 gun 12 tester" kuralinda son katilanin
  * 14 gun penceresi tamamlanana kadar bu tester'in da app'i silmemesini rica etmek.
  */
-async function computeKeepInstalledHint(
-	testerId: string,
-	appId: string
-): Promise<number | null> {
+async function computeKeepInstalledHint(testerId: string, appId: string): Promise<number | null> {
 	const rows = await db
 		.select({ startedAt: commitments.startedAt })
 		.from(commitments)

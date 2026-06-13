@@ -61,7 +61,7 @@
 	}}
 >
 	<div
-		class="w-full max-w-md rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900"
+		class="animate-pop-in w-full max-w-md rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900"
 	>
 		<h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{title}</h2>
 		{#if instruction}
@@ -111,7 +111,7 @@
 				type="button"
 				onclick={submit}
 				disabled={busy || !file}
-				class="rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white hover:bg-tg-500 disabled:opacity-50"
+				class="rounded-full bg-tg-600 px-5 py-2 text-sm font-semibold text-white shadow-soft transition-all hover:bg-tg-500 hover:shadow-soft-lg active:scale-95 disabled:opacity-50 dark:shadow-none"
 			>
 				{busy ? m.upload_submitting() : m.upload_submit()}
 			</button>

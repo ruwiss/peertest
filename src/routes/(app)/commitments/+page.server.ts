@@ -1,7 +1,12 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';
 import { listMyCommitments, type MyCommitment } from '$lib/server/commitment';
-import { listMyTrades, listTradesTowardsMe, cancelTradeRequest, type TradeRequestRow } from '$lib/server/trade';
+import {
+	listMyTrades,
+	listTradesTowardsMe,
+	cancelTradeRequest,
+	type TradeRequestRow
+} from '$lib/server/trade';
 import { getSetting } from '$lib/server/config';
 
 export const load: PageServerLoad = async ({ locals }) => {

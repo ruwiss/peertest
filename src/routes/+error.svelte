@@ -49,7 +49,9 @@
 
 <svelte:head><title>{page.status} · {m.app_name()}</title></svelte:head>
 
-<section class="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center px-4 py-16 text-center">
+<section
+	class="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center px-4 py-16 text-center"
+>
 	<!-- Buyuk status numarasi -->
 	<div class="relative">
 		<div class="font-mono text-7xl font-semibold text-zinc-200 sm:text-8xl dark:text-zinc-800">
@@ -60,15 +62,15 @@
 		</div>
 	</div>
 
-	<h1 class="mt-4 text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+	<h1 class="mt-4 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
 		{titleFor}
 	</h1>
-	<p class="mt-2 text-sm text-zinc-500">{bodyFor}</p>
+	<p class="mt-2.5 text-sm text-zinc-500">{bodyFor}</p>
 
 	{#if technical}
 		<details class="mt-3 text-xs text-zinc-400">
 			<summary class="cursor-pointer">Teknik detay</summary>
-			<p class="mt-1 max-w-md break-words font-mono">{technical}</p>
+			<p class="mt-1 max-w-md font-mono break-words">{technical}</p>
 		</details>
 	{/if}
 
@@ -77,7 +79,7 @@
 			<button
 				type="button"
 				onclick={() => goto(`/login?redirectTo=${encodeURIComponent(page.url.pathname)}`)}
-				class="rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white hover:bg-tg-500"
+				class="rounded-full bg-tg-600 px-5 py-2 text-sm font-semibold text-white shadow-soft transition-all hover:bg-tg-500 hover:shadow-soft-lg active:scale-95 dark:shadow-none"
 			>
 				{m.error_login_btn()}
 			</button>
@@ -85,7 +87,7 @@
 			<button
 				type="button"
 				onclick={retry}
-				class="rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white hover:bg-tg-500"
+				class="rounded-full bg-tg-600 px-5 py-2 text-sm font-semibold text-white shadow-soft transition-all hover:bg-tg-500 hover:shadow-soft-lg active:scale-95 dark:shadow-none"
 			>
 				{m.error_retry()}
 			</button>

@@ -18,5 +18,9 @@
 	{@render children()}
 {:else}
 	<Header user={data.user} notif={data.notif} />
-	<main>{@render children()}</main>
+	<!-- Route degisince icerik yumusakca belirir. Sadece opacity: transform,
+	     icindeki position:fixed modallari viewport yerine main'e gore konumlandirip bozardi. -->
+	{#key page.url.pathname}
+		<main class="animate-fade-in">{@render children()}</main>
+	{/key}
 {/if}

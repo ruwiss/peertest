@@ -5,6 +5,7 @@
 	import BackLink from '$lib/components/BackLink.svelte';
 	import StatusBadge from '$lib/components/StatusBadge.svelte';
 	import SlotPips from '$lib/components/SlotPips.svelte';
+	import ActionMenu from '$lib/components/ActionMenu.svelte';
 	import { appStatusTone, commitmentStatusTone } from '$lib/utils/status';
 	import { appSlug } from '$lib/utils/slug';
 	import type { PageData, ActionData } from './$types';
@@ -40,6 +41,9 @@
 		cancelled: m.commitment_status_cancelled
 	};
 
+	const menuItemCls =
+		'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-800';
+
 	function fmt(d: Date | string): string {
 		return new Intl.DateTimeFormat(getLocale() === 'en' ? 'en-US' : 'tr-TR', {
 			day: '2-digit',
@@ -53,7 +57,7 @@
 	<title>{m.admin_user_apps_title({ name: d.user.firstName })} · {m.admin_title()}</title>
 </svelte:head>
 
-<section class="mx-auto max-w-5xl px-4 py-8">
+<section class="mx-auto max-w-4xl px-4 py-8">
 	<div class="mb-4">
 		<BackLink href="/admin" label={m.admin_user_back()} />
 	</div>
@@ -83,7 +87,7 @@
 	{/if}
 
 	<div
-		class="mb-6 flex items-center gap-4 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900"
+		class="mt-5 mb-6 flex items-center gap-4 rounded-2xl border border-zinc-200/70 bg-white p-5 shadow-soft dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none"
 	>
 		{#if d.user.avatarUrl}
 			<img src={d.user.avatarUrl} alt="" class="size-14 rounded-full object-cover" />
@@ -96,7 +100,7 @@
 		{/if}
 		<div class="min-w-0 flex-1">
 			<div class="flex items-center gap-2">
-				<h1 class="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+				<h1 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
 					{d.user.firstName}
 				</h1>
 				{#if d.user.role === 'admin'}
@@ -124,7 +128,7 @@
 		</div>
 	</div>
 
-	<h2 class="mt-8 mb-3 text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+	<h2 class="mt-10 mb-4 text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
 		{m.admin_link_user_apps()}
 	</h2>
 	{#if d.apps.length === 0}
@@ -134,9 +138,9 @@
 			{m.admin_user_apps_empty()}
 		</p>
 	{:else}
-		<div class="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
+		<div class="overflow-x-auto rounded-2xl border border-zinc-200/80 dark:border-zinc-800">
 			<table class="w-full text-sm">
-				<thead class="bg-zinc-50 text-left text-xs text-zinc-500 dark:bg-zinc-900">
+				<thead class="bg-zinc-50/60 text-left text-xs text-zinc-500 dark:bg-zinc-900/60">
 					<tr>
 						<th class="p-3">{m.admin_th_app()}</th>
 						<th class="p-3">{m.admin_th_status()}</th>
@@ -177,37 +181,8 @@
 							</td>
 							<td class="p-3 font-mono text-xs text-zinc-500">{fmt(a.createdAt)}</td>
 							<td class="p-3">
-								<div class="flex flex-wrap items-center justify-end gap-1.5">
-									<!-- Herkese duyuru (global) -->
-									<button
-										type="button"
-										onclick={() => (showBroadcast = true)}
-										class="inline-flex items-center gap-1 rounded-lg border border-zinc-200 px-2 py-1 text-xs font-medium text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
-									>
-										<svg class="size-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-											<path
-												d="M3.105 2.289a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.085l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.289Z"
-											/>
-										</svg>
-										{m.admin_app_broadcast_all()}
-									</button>
-									<!-- Bu uygulamanin sahibine ozel bildirim -->
-									<button
-										type="button"
-										onclick={() => {
-											notifyTarget = { id: a.id, name: a.name };
-											notifyMessage = '';
-										}}
-										class="inline-flex items-center gap-1 rounded-lg border border-tg-200 bg-tg-50 px-2 py-1 text-xs font-medium text-tg-700 hover:bg-tg-100 dark:border-tg-500/30 dark:bg-tg-500/10 dark:text-tg-300 dark:hover:bg-tg-500/20"
-									>
-										<svg class="size-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-											<path
-												d="M3.105 2.289a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.085l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.289Z"
-											/>
-										</svg>
-										{m.admin_app_notify_btn()}
-									</button>
-									<!-- Testerlari gor -->
+								<div class="flex items-center justify-end gap-1.5">
+									<!-- Birincil: testerlari gor. Bildirim aksiyonlari ⋯ menusunde. -->
 									<a
 										href="/admin/apps/{a.id}"
 										class="inline-flex items-center gap-1 rounded-lg border border-zinc-200 px-2.5 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
@@ -221,6 +196,51 @@
 											/>
 										</svg>
 									</a>
+									<ActionMenu>
+										{#snippet children(close)}
+											<button
+												type="button"
+												onclick={() => {
+													notifyTarget = { id: a.id, name: a.name };
+													notifyMessage = '';
+													close();
+												}}
+												class={menuItemCls}
+											>
+												<svg
+													class="size-3.5 text-tg-600 dark:text-tg-400"
+													viewBox="0 0 20 20"
+													fill="currentColor"
+													aria-hidden="true"
+												>
+													<path
+														d="M3.105 2.289a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.085l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.289Z"
+													/>
+												</svg>
+												{m.admin_app_notify_btn()}
+											</button>
+											<button
+												type="button"
+												onclick={() => {
+													showBroadcast = true;
+													close();
+												}}
+												class={menuItemCls}
+											>
+												<svg
+													class="size-3.5 text-zinc-400"
+													viewBox="0 0 20 20"
+													fill="currentColor"
+													aria-hidden="true"
+												>
+													<path
+														d="M3.105 2.289a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.085l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.289Z"
+													/>
+												</svg>
+												{m.admin_app_broadcast_all()}
+											</button>
+										{/snippet}
+									</ActionMenu>
 								</div>
 							</td>
 						</tr>
@@ -230,7 +250,7 @@
 		</div>
 	{/if}
 
-	<h2 class="mt-8 mb-3 text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+	<h2 class="mt-10 mb-4 text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
 		{m.admin_user_commitments_title()}
 	</h2>
 	{#if d.commitments.length === 0}
@@ -240,9 +260,9 @@
 			{m.admin_user_commitments_empty()}
 		</p>
 	{:else}
-		<div class="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
+		<div class="overflow-x-auto rounded-2xl border border-zinc-200/80 dark:border-zinc-800">
 			<table class="w-full text-sm">
-				<thead class="bg-zinc-50 text-left text-xs text-zinc-500 dark:bg-zinc-900">
+				<thead class="bg-zinc-50/60 text-left text-xs text-zinc-500 dark:bg-zinc-900/60">
 					<tr>
 						<th class="p-3">{m.admin_th_app()}</th>
 						<th class="p-3">{m.admin_th_status()}</th>
@@ -288,9 +308,9 @@
 		}}
 	>
 		<div
-			class="w-full max-w-lg rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800 dark:bg-zinc-900"
+			class="animate-pop-in w-full max-w-lg rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800 dark:bg-zinc-900"
 		>
-			<h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+			<h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
 				{m.admin_broadcast_title()}
 			</h2>
 			<p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{m.admin_broadcast_desc()}</p>
@@ -374,9 +394,9 @@
 		}}
 	>
 		<div
-			class="w-full max-w-lg rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800 dark:bg-zinc-900"
+			class="animate-pop-in w-full max-w-lg rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800 dark:bg-zinc-900"
 		>
-			<h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+			<h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
 				{m.admin_app_notify_title({ app: notifyTarget.name })}
 			</h2>
 			<p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">

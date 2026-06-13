@@ -48,8 +48,8 @@
 
 <svelte:head><title>{m.admin_app_testers_title({ app: data.appName })}</title></svelte:head>
 
-<section class="mx-auto max-w-5xl px-4 py-8">
-	<div class="mb-4">
+<section class="mx-auto max-w-4xl px-4 py-8 sm:py-10">
+	<div class="mb-5">
 		<BackLink
 			href={data.owner ? `/admin/users/${data.owner.id}` : '/admin'}
 			label={m.admin_app_back()}
@@ -58,7 +58,7 @@
 
 	<div class="mb-6 flex flex-wrap items-center justify-between gap-3">
 		<div>
-			<h1 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+			<h1 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
 				{m.admin_app_testers_title({ app: data.appName })}
 			</h1>
 			{#if data.owner}
@@ -113,26 +113,29 @@
 			{m.admin_app_no_testers()}
 		</p>
 	{:else}
-		<div class="space-y-3">
+		<div class="space-y-2.5">
 			{#each data.commitments as c (c.id)}
 				<div
-					class="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900"
+					class="rounded-2xl border border-zinc-200/70 bg-white p-4 shadow-soft dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none"
 				>
-					<!-- Tester satiri -->
-					<div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+					<!-- Tester satiri: kompakt -->
+					<div class="flex items-center justify-between gap-3">
 						<a
 							href="/users/{c.tester.id}"
-							class="flex items-center gap-2 text-sm font-medium text-zinc-900 hover:underline dark:text-zinc-100"
+							class="flex min-w-0 items-center gap-2 text-sm font-semibold text-zinc-900 hover:underline dark:text-zinc-100"
 						>
-							{c.tester.firstName}
+							<span class="truncate">{c.tester.firstName}</span>
 							{#if c.tester.username}
-								<span class="font-mono text-xs text-zinc-400">@{c.tester.username}</span>
+								<span class="truncate font-mono text-xs font-normal text-zinc-400"
+									>@{c.tester.username}</span
+								>
 							{/if}
 						</a>
-						<div class="flex items-center gap-2">
-							<span class="font-mono text-xs text-zinc-400">{fmt(c.startedAt)}</span>
+						<div class="flex shrink-0 items-center gap-2">
+							<span class="hidden font-mono text-xs text-zinc-400 sm:inline"
+								>{fmt(c.startedAt)}</span
+							>
 							<StatusBadge tone={commitmentStatusTone(c.status)} label={statusLabel[c.status]()} />
-							<!-- Admin: aktif taahhudu zorla sonlandir (kanit gonderilmis olsa bile). -->
 							{#if c.status === 'active'}
 								<form
 									method="POST"
@@ -145,46 +148,80 @@
 									<input type="hidden" name="commitmentId" value={c.id} />
 									<button
 										type="submit"
-										class="rounded-md border border-red-200 px-2 py-0.5 text-[11px] font-medium text-red-700 hover:bg-red-50 dark:border-red-500/30 dark:text-red-400 dark:hover:bg-red-500/10"
+										title={m.admin_cmt_cancel_btn()}
+										aria-label={m.admin_cmt_cancel_btn()}
+										class="inline-flex size-7 items-center justify-center rounded-lg text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10 dark:hover:text-red-400"
 									>
-										{m.admin_cmt_cancel_btn()}
+										<svg
+											class="size-4"
+											viewBox="0 0 20 20"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="1.8"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											aria-hidden="true"
+										>
+											<path d="M6 6l8 8M14 6l-8 8" />
+										</svg>
 									</button>
 								</form>
 							{/if}
 						</div>
 					</div>
 
-					<!-- 3 checkpoint kartlari (kanit durumu + screenshot) -->
-					<div class="grid gap-2 sm:grid-cols-3">
+					<!-- 3 kontrol noktasi: kompakt yatay serit -->
+					<div class="mt-3 grid grid-cols-3 gap-2">
 						{#each c.checkpoints as cp (cp.kind)}
-							<div
-								class="rounded-lg border border-zinc-200 bg-zinc-50/40 p-3 dark:border-zinc-800 dark:bg-zinc-950/30"
-							>
-								<div class="flex items-center justify-between gap-2">
-									<span class="text-xs font-semibold text-zinc-700 dark:text-zinc-200">
-										{cpKindLabel[cp.kind]()}
-									</span>
-									<StatusBadge tone={cpStatusTone(cp.status)} label={cpStatusLabel[cp.status]()} />
-								</div>
-								<div class="mt-1 font-mono text-[10px] text-zinc-400">{fmt(cp.submittedAt)}</div>
-								{#if cp.screenshots?.length}
-									<div class="mt-2 flex flex-wrap gap-1.5">
-										{#each cp.screenshots as s, i (i)}
-											<button
-												type="button"
-												onclick={() => (lightbox = { src: s.url, alt: cpKindLabel[cp.kind]() })}
-												class="group relative overflow-hidden rounded-md border border-zinc-200 transition-transform hover:scale-105 dark:border-zinc-700"
+							{@const shots = cp.screenshots ?? []}
+							<div class="flex items-center gap-2.5 rounded-xl bg-zinc-50 p-2 dark:bg-zinc-950/40">
+								<!-- Kanit thumbnail ya da durum yer tutucu -->
+								{#if shots.length}
+									<button
+										type="button"
+										onclick={() => (lightbox = { src: shots[0].url, alt: cpKindLabel[cp.kind]() })}
+										class="group relative size-11 shrink-0 overflow-hidden rounded-lg ring-1 ring-zinc-200 transition-transform hover:scale-105 dark:ring-zinc-700"
+									>
+										<img src={shots[0].url} alt="kanit" class="size-full object-cover" />
+										{#if shots.length > 1}
+											<span
+												class="absolute right-0 bottom-0 rounded-tl-md bg-black/60 px-1 font-mono text-[9px] font-semibold text-white"
+												>+{shots.length - 1}</span
 											>
-												<img src={s.url} alt="kanit" class="size-14 object-cover sm:size-16" />
-												<span
-													class="pointer-events-none absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/30"
-												></span>
-											</button>
-										{/each}
-									</div>
+										{/if}
+									</button>
 								{:else}
-									<div class="mt-2 text-xs text-zinc-400">{m.admin_app_proof_pending()}</div>
+									<span
+										class="flex size-11 shrink-0 items-center justify-center rounded-lg border border-dashed border-zinc-200 text-zinc-300 dark:border-zinc-700 dark:text-zinc-600"
+									>
+										<svg
+											class="size-4"
+											viewBox="0 0 20 20"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="1.6"
+											aria-hidden="true"
+										>
+											<rect x="3" y="3" width="14" height="14" rx="2" />
+											<path
+												d="M3 13l4-4 3 3 3-3 4 4"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+											/>
+										</svg>
+									</span>
 								{/if}
+								<div class="min-w-0">
+									<div class="truncate text-xs font-semibold text-zinc-700 dark:text-zinc-200">
+										{cpKindLabel[cp.kind]()}
+									</div>
+									<div class="mt-0.5">
+										<StatusBadge
+											tone={cpStatusTone(cp.status)}
+											label={cpStatusLabel[cp.status]()}
+										/>
+									</div>
+								</div>
 							</div>
 						{/each}
 					</div>
@@ -212,9 +249,9 @@
 		}}
 	>
 		<div
-			class="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800 dark:bg-zinc-900"
+			class="animate-pop-in w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800 dark:bg-zinc-900"
 		>
-			<h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+			<h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
 				{m.admin_app_delete_modal_title({ app: data.appName })}
 			</h2>
 			<p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{m.admin_app_delete_modal_desc()}</p>

@@ -17,7 +17,9 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
 	const rl = consume(`join:${locals.user.id}:${ip}`, LIMITS.commitmentJoin);
 	if (!rl.ok) {
 		return new Response(
-			JSON.stringify({ message: `Çok hızlı deneme yaptın, ${rl.retryAfter} sn sonra tekrar dene.` }),
+			JSON.stringify({
+				message: `Çok hızlı deneme yaptın, ${rl.retryAfter} sn sonra tekrar dene.`
+			}),
 			{
 				status: 429,
 				headers: { 'content-type': 'application/json', 'retry-after': String(rl.retryAfter) }

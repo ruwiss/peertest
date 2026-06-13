@@ -71,17 +71,30 @@
 	>
 		{#if value}
 			<img src={value} alt="" class="size-full object-cover" />
-			<div class="absolute inset-0 flex items-center justify-center bg-black/50 text-xs font-medium text-white opacity-0 transition-opacity group-hover:opacity-100">
+			<div
+				class="absolute inset-0 flex items-center justify-center bg-black/50 text-xs font-medium text-white opacity-0 transition-opacity group-hover:opacity-100"
+			>
 				{busy ? m.my_apps_form_icon_uploading() : m.my_apps_form_icon_replace()}
 			</div>
 		{:else}
 			<div class="flex flex-col items-center gap-1 text-zinc-400">
-				<svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<svg
+					class="size-6"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
 					<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
 					<polyline points="17 8 12 3 7 8" />
 					<line x1="12" y1="3" x2="12" y2="15" />
 				</svg>
-				<span class="text-[10px] font-medium">{busy ? m.my_apps_form_icon_uploading() : 'PNG/JPG'}</span>
+				<span class="text-[10px] font-medium"
+					>{busy ? m.my_apps_form_icon_uploading() : 'PNG/JPG'}</span
+				>
 			</div>
 		{/if}
 	</button>

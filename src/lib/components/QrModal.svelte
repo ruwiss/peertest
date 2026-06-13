@@ -41,7 +41,7 @@
 	}}
 >
 	<div
-		class="w-full max-w-xs rounded-t-2xl border border-zinc-200 bg-white p-5 shadow-xl sm:rounded-2xl dark:border-zinc-800 dark:bg-zinc-900"
+		class="animate-pop-in w-full max-w-xs rounded-t-2xl border border-zinc-200 bg-white p-5 shadow-xl sm:rounded-2xl dark:border-zinc-800 dark:bg-zinc-900"
 	>
 		<div class="mb-1 flex items-center justify-between gap-2">
 			<h2 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">

@@ -1,154 +1,167 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import * as m from '$lib/paraglide/messages';
 	import type { PageData } from './$types';
-	import AppRow from '$lib/components/AppRow.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 
 	let { data }: { data: PageData } = $props();
 
-	// svelte-ignore state_referenced_locally
-	let query = $state(data.q);
-	let searchTimer: ReturnType<typeof setTimeout> | undefined;
-
-	function navigate(nextQ: string, nextPage: number) {
-		const params = new SvelteURLSearchParams();
-		if (nextQ.trim()) params.set('q', nextQ.trim());
-		if (nextPage > 1) params.set('page', String(nextPage));
-		const qs = params.toString();
-		goto(qs ? `/?${qs}` : '/', { replaceState: false, keepFocus: true, noScroll: false });
-	}
-
-	function onInput(v: string) {
-		query = v;
-		if (searchTimer) clearTimeout(searchTimer);
-		searchTimer = setTimeout(() => navigate(v, 1), 250);
-	}
-
-	function clearQuery() {
-		query = '';
-		if (searchTimer) clearTimeout(searchTimer);
-		navigate('', 1);
-	}
-
-	const hasPrev = $derived(data.page > 1);
-	const hasNext = $derived(data.page < data.totalPages);
+	// 14 gunluk cizelge: 3 kontrol noktasi. pos = 14 gunluk ray uzerinde % konum.
+	const steps = $derived([
+		{ n: 1, label: m.checkpoint_joined(), day: '0–2', body: m.how_cp_joined_body(), pos: 8 },
+		{ n: 2, label: m.checkpoint_active(), day: '6–9', body: m.how_cp_active_body(), pos: 53 },
+		{
+			n: 3,
+			label: m.checkpoint_completed(),
+			day: '13–14',
+			body: m.how_cp_completed_body(),
+			pos: 95
+		}
+	]);
 </script>
 
 <svelte:head>
-	<title>{m.home_title()} · {m.app_name()}</title>
+	<title>{m.how_title()} · {m.app_name()}</title>
 </svelte:head>
 
-<section class="mx-auto max-w-5xl px-4 py-6 sm:py-8">
-	<!-- Baslik satiri: sadece baslik + sag taraf My Apps butonu -->
-	<div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-		<h1 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
-			{m.home_title()}
+<section class="mx-auto max-w-4xl px-4 py-12 sm:py-16">
+	<!-- Hero -->
+	<header class="mx-auto max-w-2xl text-center">
+		<span
+			class="inline-flex items-center gap-1.5 rounded-full border border-tg-200 bg-tg-50 px-3 py-1 text-xs font-semibold text-tg-700 dark:border-tg-500/30 dark:bg-tg-500/10 dark:text-tg-300"
+		>
+			<span class="size-1.5 rounded-full bg-tg-500"></span>
+			14 {m.how_days_unit()} · 3 {m.how_checkpoints_unit()}
+		</span>
+		<h1 class="mt-5 text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl dark:text-zinc-100">
+			{m.how_title()}
 		</h1>
-		{#if data.loggedIn}
+		<p class="mx-auto mt-4 text-[15px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+			{m.how_lede()}
+		</p>
+		<div class="mt-7 flex flex-wrap justify-center gap-3">
+			{#if !data.loggedIn}
+				<a
+					href="/login"
+					class="rounded-full bg-tg-600 px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-colors hover:bg-tg-500 dark:shadow-none"
+				>
+					{m.how_cta_login()}
+				</a>
+			{/if}
 			<a
-				href="/my-apps"
-				class="rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+				href="/apps"
+				class="rounded-full border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
 			>
-				{m.home_my_apps()}
+				{m.how_cta_apps()}
 			</a>
-		{/if}
-	</div>
+		</div>
+	</header>
 
-	<!-- Tam genislik search bar: tek odak noktasi -->
-	<div class="relative mb-5">
-		<svg
-			class="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-zinc-400"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-			aria-hidden="true"
-		>
-			<circle cx="11" cy="11" r="7" />
-			<path d="m21 21-4.3-4.3" />
-		</svg>
-		<input
-			type="search"
-			value={query}
-			oninput={(e) => onInput((e.currentTarget as HTMLInputElement).value)}
-			placeholder={m.home_search_placeholder()}
-			class="w-full rounded-xl border border-zinc-200 bg-white py-2.5 pr-10 pl-10 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-tg-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
-		/>
-		{#if query}
-			<button
-				type="button"
-				onclick={clearQuery}
-				aria-label={m.home_search_clear()}
-				class="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-md p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+	<!-- Iki katilim modu -->
+	<div class="mt-16 sm:mt-20">
+		<h2 class="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+			{m.how_modes_title()}
+		</h2>
+		<div class="mt-5 grid gap-4 sm:grid-cols-2">
+			<div
+				class="rounded-3xl border border-zinc-200/70 bg-white p-6 shadow-soft dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none"
 			>
-				<svg
-					class="size-4"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					aria-hidden="true"
-				>
-					<path d="M18 6 6 18M6 6l12 12" />
-				</svg>
-			</button>
-		{/if}
+				<div class="flex items-center gap-3">
+					<span
+						class="inline-flex size-10 items-center justify-center rounded-2xl bg-tg-100 text-tg-600 dark:bg-tg-500/20 dark:text-tg-300"
+					>
+						<Icon name="swap" class="size-5" />
+					</span>
+					<h3 class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+						{m.how_mode_reciprocal_title()}
+					</h3>
+				</div>
+				<p class="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+					{m.how_mode_reciprocal_body()}
+				</p>
+			</div>
+			<div
+				class="rounded-3xl border border-zinc-200/70 bg-white p-6 shadow-soft dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none"
+			>
+				<div class="flex items-center gap-3">
+					<span
+						class="inline-flex size-10 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300"
+					>
+						<Icon name="handshake" class="size-5" />
+					</span>
+					<h3 class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+						{m.how_mode_free_title()}
+					</h3>
+				</div>
+				<p class="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+					{m.how_mode_free_body()}
+				</p>
+			</div>
+		</div>
 	</div>
 
-	{#if !data.dbReady}
-		<div
-			class="rounded-xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300"
-		>
-			{m.home_db_not_ready()}
-		</div>
-	{:else if data.apps.length === 0}
-		<div
-			class="rounded-xl border border-dashed border-zinc-200 bg-zinc-50 p-10 text-center dark:border-zinc-800 dark:bg-zinc-900/50"
-		>
-			<p class="text-sm text-zinc-500">
-				{data.q ? m.home_no_results() : data.loggedIn ? m.home_empty_logged() : m.home_empty_anon()}
-			</p>
-		</div>
-	{:else}
-		<div class="space-y-2">
-			{#each data.apps as app (app.id)}
-				<AppRow
-					{app}
-					loggedIn={data.loggedIn}
-					isOwn={app.owner.id === data.currentUserId}
-					joined={data.joinedAppIds.includes(app.id)}
-					dimBelow={data.dimBelow}
-				/>
-			{/each}
+	<!-- 14 gunluk zaman cizelgesi: gercek gun-rayi + altinda kontrol noktasi kartlari -->
+	<div class="mt-16 sm:mt-20">
+		<div class="flex items-baseline justify-between gap-3">
+			<h2 class="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+				{m.how_timeline_title()}
+			</h2>
+			<span class="hidden text-sm text-zinc-400 sm:inline">{m.how_timeline_lede()}</span>
 		</div>
 
-		{#if data.totalPages > 1}
-			<nav class="mt-6 flex items-center justify-between gap-2 text-sm">
-				<button
-					type="button"
-					disabled={!hasPrev}
-					onclick={() => navigate(data.q, data.page - 1)}
-					class="rounded-lg border border-zinc-200 px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-				>
-					← {m.home_page_prev()}
-				</button>
-				<div class="font-mono text-xs text-zinc-500">
-					{m.home_page_of({ page: data.page, total: data.totalPages })}
+		<div
+			class="mt-5 rounded-3xl border border-zinc-200/70 bg-white p-6 shadow-soft sm:p-8 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none"
+		>
+			<!-- Gun rayi: 14 gunluk yatay surec, uzerinde 3 kontrol noktasi -->
+			<div class="relative px-1 pt-2 pb-1">
+				<!-- Ray zemini -->
+				<div class="h-2 rounded-full bg-zinc-100 dark:bg-zinc-800">
+					<!-- Dolu kisim: marka gradyani -->
+					<div
+						class="h-2 rounded-full bg-gradient-to-r from-tg-400 to-tg-600"
+						style="width: {steps[steps.length - 1].pos}%"
+					></div>
 				</div>
-				<button
-					type="button"
-					disabled={!hasNext}
-					onclick={() => navigate(data.q, data.page + 1)}
-					class="rounded-lg border border-zinc-200 px-3 py-1.5 font-medium text-zinc-700 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-				>
-					{m.home_page_next()} →
-				</button>
-			</nav>
-		{/if}
-	{/if}
+				<!-- Kontrol noktasi isaretleri -->
+				{#each steps as s (s.n)}
+					<div class="absolute top-1.5 -translate-x-1/2" style="left: {s.pos}%" aria-hidden="true">
+						<span
+							class="flex size-5 items-center justify-center rounded-full bg-white font-mono text-[10px] font-bold text-tg-700 shadow ring-2 ring-tg-500 dark:bg-zinc-900 dark:text-tg-300"
+						>
+							{s.n}
+						</span>
+					</div>
+				{/each}
+				<!-- Gun olcek etiketleri -->
+				<div class="mt-3 flex justify-between font-mono text-[11px] text-zinc-400">
+					<span>{m.how_day_label({ n: 1 })}</span>
+					<span>{m.how_day_label({ n: 7 })}</span>
+					<span>{m.how_day_label({ n: 14 })}</span>
+				</div>
+			</div>
+
+			<!-- Kontrol noktasi aciklamalari -->
+			<ol class="mt-7 grid gap-3 sm:grid-cols-3">
+				{#each steps as s (s.n)}
+					<li
+						class="rounded-2xl border border-zinc-200/70 bg-zinc-50/60 p-4 dark:border-zinc-800 dark:bg-zinc-950/40"
+					>
+						<div class="flex items-center gap-2">
+							<span
+								class="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-tg-600 font-mono text-xs font-bold text-white"
+							>
+								{s.n}
+							</span>
+							<span class="truncate font-semibold text-zinc-900 dark:text-zinc-100">{s.label}</span>
+						</div>
+						<div
+							class="mt-2 inline-flex items-center gap-1 rounded-full bg-tg-50 px-2 py-0.5 font-mono text-[11px] font-medium text-tg-700 dark:bg-tg-500/10 dark:text-tg-300"
+						>
+							{m.how_day_label({ n: s.day })}
+						</div>
+						<p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{s.body}</p>
+					</li>
+				{/each}
+			</ol>
+		</div>
+	</div>
 </section>

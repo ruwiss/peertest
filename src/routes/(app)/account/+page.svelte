@@ -100,9 +100,11 @@
 	<title>{m.account_title()} · {m.app_name()}</title>
 </svelte:head>
 
-<section class="mx-auto max-w-5xl px-4 py-6 sm:py-10">
+<section class="mx-auto max-w-4xl px-4 py-8 sm:py-12">
 	<!-- Profile hero: avatar banner ustune oturuyor, isim banner'in altinda kaliyor -->
-	<div class="overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+	<div
+		class="overflow-hidden rounded-2xl border border-zinc-200/70 bg-white shadow-soft dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none"
+	>
 		<div class="h-20 bg-gradient-to-br from-tg-500 via-tg-600 to-tg-700 sm:h-24"></div>
 		<div class="px-4 pb-5 sm:px-6">
 			<div class="flex flex-wrap items-end justify-between gap-3">
@@ -132,12 +134,32 @@
 						class="absolute -right-1 -bottom-1 inline-flex size-7 items-center justify-center rounded-full border-2 border-white bg-tg-600 text-white shadow-md transition-colors hover:bg-tg-500 disabled:opacity-60 dark:border-zinc-900"
 					>
 						{#if avatarBusy}
-							<svg class="size-3.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<svg
+								class="size-3.5 animate-spin"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
 								<path d="M21 12a9 9 0 1 1-6.219-8.56" />
 							</svg>
 						{:else}
-							<svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-								<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+							<svg
+								class="size-3.5"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<path
+									d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
+								/>
 								<circle cx="12" cy="13" r="4" />
 							</svg>
 						{/if}
@@ -154,7 +176,16 @@
 								onclick={() => fileInputEl?.click()}
 								class="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-sm text-zinc-700 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
 							>
-								<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+								<svg
+									class="size-4"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									aria-hidden="true"
+								>
 									<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
 									<polyline points="17 8 12 3 7 8" />
 									<line x1="12" y1="3" x2="12" y2="15" />
@@ -167,9 +198,20 @@
 									onclick={removeAvatar}
 									class="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
 								>
-									<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+									<svg
+										class="size-4"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										aria-hidden="true"
+									>
 										<polyline points="3 6 5 6 21 6" />
-										<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+										<path
+											d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+										/>
 									</svg>
 									{m.account_avatar_remove()}
 								</button>
@@ -213,12 +255,14 @@
 			</div>
 
 			{#if avatarError || avatarErrorFromAction}
-				<p class="mt-3 rounded-lg border border-red-200 bg-red-50 p-2 text-xs text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300">
+				<p
+					class="mt-3 rounded-lg border border-red-200 bg-red-50 p-2 text-xs text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300"
+				>
 					{avatarError ?? avatarErrorFromAction}
 				</p>
 			{/if}
 			<div class="mt-3">
-				<h1 class="truncate text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+				<h1 class="truncate text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
 					{user.firstName}
 				</h1>
 				{#if user.username}
@@ -230,17 +274,27 @@
 
 	<!-- Stat grid -->
 	<div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-		<div class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+		<div
+			class="rounded-2xl border border-zinc-200/70 bg-white p-4 shadow-soft dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none"
+		>
 			<div class="text-xs text-zinc-500">{m.account_field_score()}</div>
 			<div class="mt-1 flex items-baseline gap-1">
-				<span class="font-mono text-2xl font-semibold text-zinc-900 dark:text-zinc-100">{user.score}</span>
+				<span class="font-mono text-2xl font-semibold text-zinc-900 dark:text-zinc-100"
+					>{user.score}</span
+				>
 			</div>
 		</div>
-		<div class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+		<div
+			class="rounded-2xl border border-zinc-200/70 bg-white p-4 shadow-soft dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none"
+		>
 			<div class="text-xs text-zinc-500">{m.profile_completed()}</div>
-			<div class="mt-1 font-mono text-2xl font-semibold text-zinc-900 dark:text-zinc-100">{data.completedCount}</div>
+			<div class="mt-1 font-mono text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+				{data.completedCount}
+			</div>
 		</div>
-		<div class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+		<div
+			class="rounded-2xl border border-zinc-200/70 bg-white p-4 shadow-soft dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none"
+		>
 			<div class="text-xs text-zinc-500">{m.account_field_bot()}</div>
 			<div class="mt-1 flex items-center gap-1.5">
 				{#if user.botStarted}
@@ -256,15 +310,19 @@
 				{/if}
 			</div>
 		</div>
-		<div class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+		<div
+			class="rounded-2xl border border-zinc-200/70 bg-white p-4 shadow-soft dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none"
+		>
 			<div class="text-xs text-zinc-500">{m.profile_member_since()}</div>
-			<div class="mt-1 text-sm font-medium text-zinc-900 dark:text-zinc-100">{fmtDate(data.memberSince)}</div>
+			<div class="mt-1 text-sm font-medium text-zinc-900 dark:text-zinc-100">
+				{fmtDate(data.memberSince)}
+			</div>
 		</div>
 	</div>
 
 	<!-- Score history -->
-	<div class="mt-8">
-		<h2 class="mb-3 text-sm font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
+	<div class="mt-10">
+		<h2 class="mb-4 text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
 			{m.account_history_title()}
 		</h2>
 		{#if data.events.length === 0}
@@ -274,7 +332,9 @@
 				{m.account_history_empty()}
 			</div>
 		{:else}
-			<div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+			<div
+				class="overflow-hidden rounded-2xl border border-zinc-200/70 bg-white shadow-soft dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none"
+			>
 				<ul class="divide-y divide-zinc-100 dark:divide-zinc-800">
 					{#each data.events as e (e.id)}
 						<li class="flex items-center gap-4 px-4 py-3 text-sm">
@@ -289,7 +349,9 @@
 									</svg>
 								{:else}
 									<svg class="size-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-										<path d="M10 4a1 1 0 0 1 1 1v4h4a1 1 0 1 1 0 2h-4v4a1 1 0 1 1-2 0v-4H5a1 1 0 1 1 0-2h4V5a1 1 0 0 1 1-1Z" />
+										<path
+											d="M10 4a1 1 0 0 1 1 1v4h4a1 1 0 1 1 0 2h-4v4a1 1 0 1 1-2 0v-4H5a1 1 0 1 1 0-2h4V5a1 1 0 0 1 1-1Z"
+										/>
 									</svg>
 								{/if}
 							</div>
@@ -298,7 +360,8 @@
 									{reasonLabel[e.reason]?.() ?? e.reason}
 								</div>
 								<div class="truncate font-mono text-xs text-zinc-400">
-									{fmt(e.createdAt)}{#if e.note} · {e.note}{/if}
+									{fmt(e.createdAt)}{#if e.note}
+										· {e.note}{/if}
 								</div>
 							</div>
 							<div

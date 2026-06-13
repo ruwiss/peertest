@@ -35,8 +35,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
 	if (file.size > MAX_BYTES) error(413, 'Görsel çok büyük (max 8MB).');
 	if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0)
 		error(400, 'Görsel boyutları eksik veya geçersiz.');
-	if (width > 8000 || height > 8000)
-		error(400, 'Görsel boyutları aşırı büyük (max 8000px).');
+	if (width > 8000 || height > 8000) error(400, 'Görsel boyutları aşırı büyük (max 8000px).');
 
 	const data = await file.arrayBuffer();
 	if (!isImageBytes(data)) error(415, 'Sadece görsel dosyalar yüklenebilir (PNG/JPG/GIF/WEBP).');

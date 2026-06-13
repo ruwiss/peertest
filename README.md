@@ -43,17 +43,17 @@ Tarayıcı: <http://localhost:5173>
 
 `.env.example`'i `.env` olarak kopyalayıp doldur. Hiçbir gerçek değeri repo'ya commit etme; `.env` zaten `.gitignore`'da.
 
-| Değişken | Zorunlu | Açıklama |
-| --- | --- | --- |
-| `DATABASE_URL` | ✅ | Postgres connection string (Neon önerilir, pooled `-pooler` host kullan) |
-| `TELEGRAM_BOT_TOKEN` | ✅ | [@BotFather](https://t.me/BotFather)'dan bot token |
-| `PUBLIC_TELEGRAM_BOT_USERNAME` | ✅ | Bot kullanıcı adı (`@` olmadan) |
-| `TELEGRAM_WEBHOOK_SECRET` | ✅ | Webhook doğrulama gizli anahtarı (`openssl rand -hex 32`) |
-| `ADMIN_TELEGRAM_IDS` | ✅ | İlk admin(ler)in Telegram sayısal ID'leri (virgülle ayrık) |
-| `PUBLIC_BASE_URL` | ✅ | Canlı origin (`https://...`). Dev'de `http://localhost:5173` |
-| `UPLOAD_SECRET_KEY` | ⚠️ | Seçtiğin upload provider'ın API key'i |
-| `CRON_SECRET` | ✅ | Vercel Cron endpoint koruması (`openssl rand -base64 32`) |
-| `DEV_LOGIN` | ⛔ | **Sadece yerel.** `true` ise `/api/auth/dev-login` açılır. **Üretimde boş bırak** |
+| Değişken                       | Zorunlu | Açıklama                                                                          |
+| ------------------------------ | ------- | --------------------------------------------------------------------------------- |
+| `DATABASE_URL`                 | ✅      | Postgres connection string (Neon önerilir, pooled `-pooler` host kullan)          |
+| `TELEGRAM_BOT_TOKEN`           | ✅      | [@BotFather](https://t.me/BotFather)'dan bot token                                |
+| `PUBLIC_TELEGRAM_BOT_USERNAME` | ✅      | Bot kullanıcı adı (`@` olmadan)                                                   |
+| `TELEGRAM_WEBHOOK_SECRET`      | ✅      | Webhook doğrulama gizli anahtarı (`openssl rand -hex 32`)                         |
+| `ADMIN_TELEGRAM_IDS`           | ✅      | İlk admin(ler)in Telegram sayısal ID'leri (virgülle ayrık)                        |
+| `PUBLIC_BASE_URL`              | ✅      | Canlı origin (`https://...`). Dev'de `http://localhost:5173`                      |
+| `UPLOAD_SECRET_KEY`            | ⚠️      | Seçtiğin upload provider'ın API key'i                                             |
+| `CRON_SECRET`                  | ✅      | Vercel Cron endpoint koruması (`openssl rand -base64 32`)                         |
+| `DEV_LOGIN`                    | ⛔      | **Sadece yerel.** `true` ise `/api/auth/dev-login` açılır. **Üretimde boş bırak** |
 
 ## Telegram Bot Kurulumu
 
@@ -104,13 +104,13 @@ npm run db:studio     # Drizzle Studio
 
 ## Komutlar
 
-| Komut | Açıklama |
-| --- | --- |
-| `npm run dev` | Geliştirme sunucusu |
-| `npm run build` | Üretim derlemesi |
-| `npm run check` | Tip kontrolü (svelte-check) |
-| `npm run lint` / `format` | Prettier + ESLint |
-| `npm run db:migrate` | DB migration |
+| Komut                     | Açıklama                    |
+| ------------------------- | --------------------------- |
+| `npm run dev`             | Geliştirme sunucusu         |
+| `npm run build`           | Üretim derlemesi            |
+| `npm run check`           | Tip kontrolü (svelte-check) |
+| `npm run lint` / `format` | Prettier + ESLint           |
+| `npm run db:migrate`      | DB migration                |
 
 ## Mimari
 

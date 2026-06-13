@@ -101,8 +101,8 @@
 	<title>{m.commitments_title()} · {m.app_name()}</title>
 </svelte:head>
 
-<section class="mx-auto max-w-5xl px-4 py-6 sm:py-8">
-	<h1 class="mb-4 text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+<section class="mx-auto max-w-4xl px-4 py-8 sm:py-12">
+	<h1 class="mb-6 text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl dark:text-zinc-100">
 		{m.commitments_title()}
 	</h1>
 
@@ -175,7 +175,7 @@
 					<div class="space-y-2">
 						{#each data.incomingTrades as t (t.id)}
 							<div
-								class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
+								class="rounded-2xl border border-zinc-200/70 bg-white p-4 shadow-soft dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none"
 							>
 								<div class="flex flex-wrap items-start justify-between gap-3">
 									<div class="min-w-0 flex-1">
@@ -183,7 +183,18 @@
 											<a href="/users/{t.target.ownerId}" class="hover:underline"
 												>{t.target.ownerName}</a
 											>
-											<span class="text-zinc-500">→</span>
+											<svg
+												class="inline-block size-3.5 align-[-1px] text-zinc-400"
+												viewBox="0 0 20 20"
+												fill="none"
+												stroke="currentColor"
+												stroke-width="2"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												aria-hidden="true"
+											>
+												<path d="M7.5 5 13 10l-5.5 5" />
+											</svg>
 											<a
 												href="/apps/{appSlug({
 													id: t.offered.appId,
@@ -251,7 +262,7 @@
 					<div class="space-y-2">
 						{#each outgoingPending as t (t.id)}
 							<div
-								class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
+								class="rounded-2xl border border-zinc-200/70 bg-white p-4 shadow-soft dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none"
 							>
 								<div class="flex flex-wrap items-start justify-between gap-3">
 									<div class="min-w-0 flex-1">
@@ -263,7 +274,18 @@
 												})}"
 												class="text-tg-600 hover:underline dark:text-tg-400">{t.target.appName}</a
 											>
-											<span class="text-zinc-500">↔</span>
+											<svg
+												class="inline-block size-4 align-[-2px] text-zinc-400"
+												viewBox="0 0 20 20"
+												fill="none"
+												stroke="currentColor"
+												stroke-width="2"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												aria-hidden="true"
+											>
+												<path d="m7 4-3 3 3 3M4 7h12M13 16l3-3-3-3M16 13H4" />
+											</svg>
 											<a
 												href="/apps/{appSlug({
 													id: t.offered.appId,
@@ -338,7 +360,7 @@
 		}}
 	>
 		<div
-			class="w-full max-w-md rounded-t-2xl border border-zinc-200 bg-white p-6 sm:rounded-xl dark:border-zinc-800 dark:bg-zinc-900"
+			class="animate-pop-in w-full max-w-md rounded-t-2xl border border-zinc-200 bg-white p-6 sm:rounded-xl dark:border-zinc-800 dark:bg-zinc-900"
 		>
 			<div
 				class="mb-3 inline-flex size-12 items-center justify-center rounded-2xl bg-tg-50 text-tg-700 dark:bg-tg-500/15 dark:text-tg-300"
@@ -358,7 +380,7 @@
 					/>
 				</svg>
 			</div>
-			<h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+			<h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
 				{m.keep_installed_title()}
 			</h2>
 			<p class="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
@@ -368,7 +390,7 @@
 				<button
 					type="button"
 					onclick={() => (keepInstalledHint = null)}
-					class="rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white hover:bg-tg-500"
+					class="rounded-full bg-tg-600 px-5 py-2 text-sm font-semibold text-white shadow-soft transition-all hover:bg-tg-500 hover:shadow-soft-lg active:scale-95 dark:shadow-none"
 				>
 					{m.keep_installed_ok()}
 				</button>

@@ -14,14 +14,14 @@
 
 <svelte:head><title>{m.admin_templates_title()} · {m.admin_title()}</title></svelte:head>
 
-<section class="mx-auto max-w-5xl px-4 py-8">
+<section class="mx-auto max-w-4xl px-4 py-8">
 	<div class="mb-4">
 		<BackLink href="/admin" label={m.admin_back()} />
 	</div>
-	<h1 class="mb-2 text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+	<h1 class="mt-5 mb-2 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
 		{m.admin_templates_title()}
 	</h1>
-	<p class="mb-6 text-sm text-zinc-500">
+	<p class="mb-8 text-sm text-zinc-500">
 		{m.admin_templates_desc({ placeholders: '{ad} {app} {saat}' })}
 	</p>
 
@@ -42,7 +42,7 @@
 	<div class="space-y-5">
 		{#each data.items as item (item.key)}
 			<div
-				class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
+				class="rounded-2xl border border-zinc-200/70 bg-white p-4 shadow-soft sm:p-5 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none"
 			>
 				<div class="mb-3 font-mono text-xs text-zinc-400">{item.key}</div>
 				<div class="grid gap-3 sm:grid-cols-2">

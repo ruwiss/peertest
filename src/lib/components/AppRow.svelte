@@ -18,7 +18,7 @@
 </script>
 
 <div
-	class="flex flex-wrap items-center gap-3 rounded-lg border border-zinc-200 bg-white p-3 sm:gap-4 sm:p-4 dark:border-zinc-800 dark:bg-zinc-900 {app.dim
+	class="flex flex-wrap items-center gap-3 px-3 py-3.5 transition-colors hover:bg-zinc-50/70 sm:gap-4 sm:px-4 dark:hover:bg-zinc-800/40 {app.dim
 		? 'opacity-60'
 		: ''}"
 >
@@ -67,14 +67,14 @@
 				type="button"
 				disabled
 				title={m.app_yours()}
-				class="inline-flex h-9 min-w-[88px] cursor-not-allowed items-center justify-center rounded-lg border border-zinc-200 bg-zinc-50 px-3 text-sm font-medium text-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-500"
+				class="inline-flex h-9 min-w-[88px] cursor-not-allowed items-center justify-center rounded-full border border-zinc-200 bg-zinc-50 px-4 text-sm font-medium text-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-500"
 			>
 				{m.app_join()}
 			</button>
 		{:else if joined}
 			<a
 				href="/apps/{slug}"
-				class="inline-flex h-9 min-w-[88px] items-center justify-center gap-1 rounded-lg border border-emerald-200 bg-emerald-50 px-3 text-sm font-medium text-emerald-700 hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400 dark:hover:bg-emerald-500/15"
+				class="inline-flex h-9 min-w-[88px] items-center justify-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-4 text-sm font-medium text-emerald-700 hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400 dark:hover:bg-emerald-500/15"
 			>
 				<svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 					<path
@@ -88,7 +88,7 @@
 		{:else}
 			<a
 				href={loggedIn ? `/apps/${slug}` : '/login'}
-				class="inline-flex h-9 min-w-[88px] items-center justify-center rounded-lg border border-transparent bg-tg-600 px-3 text-sm font-medium text-white hover:bg-tg-500"
+				class="inline-flex h-9 min-w-[88px] items-center justify-center rounded-full border border-transparent bg-tg-600 px-4 text-sm font-semibold text-white shadow-soft transition-all hover:bg-tg-500 hover:shadow-soft-lg active:scale-95 dark:shadow-none"
 			>
 				{m.app_join()}
 			</a>

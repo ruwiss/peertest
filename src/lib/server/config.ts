@@ -32,14 +32,7 @@ export interface LimitsSetting {
 	rejoinSameAppAfterCancel: boolean;
 }
 export interface UploadSetting {
-	provider:
-		| 'prntscr'
-		| 'imgbb'
-		| 'imgur'
-		| 'catbox'
-		| 'freeimage'
-		| 'zerox0'
-		| 'vercel_blob';
+	provider: 'prntscr' | 'imgbb' | 'imgur' | 'catbox' | 'freeimage' | 'zerox0' | 'vercel_blob';
 	baseUrl: string;
 	secretKey: string;
 	userAgent: string;

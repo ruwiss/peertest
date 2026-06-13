@@ -114,7 +114,12 @@
 						<div class="truncate font-mono text-xs text-zinc-500">@{user.username}</div>
 					{/if}
 				</div>
-				<svg class="size-4 text-zinc-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+				<svg
+					class="size-4 text-zinc-400"
+					viewBox="0 0 20 20"
+					fill="currentColor"
+					aria-hidden="true"
+				>
 					<path
 						fill-rule="evenodd"
 						d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.05 10 7.23 6.29a.75.75 0 1 1 1.04-1.08l4.39 4.25a.75.75 0 0 1 0 1.08l-4.39 4.25a.75.75 0 0 1-1.06-.02Z"
@@ -126,16 +131,39 @@
 			<div class="my-1 h-px bg-zinc-100 dark:bg-zinc-800"></div>
 
 			<!-- Theme mode picker: 3 li grup (sistem/aciksiyah/koyu) -->
-			<div class="flex items-center justify-between rounded-lg px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300">
+			<div
+				class="flex items-center justify-between rounded-lg px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300"
+			>
 				<span class="flex items-center gap-2.5">
 					{#if dark}
-						<svg class="size-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+						<svg
+							class="size-4 text-amber-500"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width="1.8"
+							aria-hidden="true"
+						>
 							<circle cx="12" cy="12" r="4" />
-							<path stroke-linecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41" />
+							<path
+								stroke-linecap="round"
+								d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41"
+							/>
 						</svg>
 					{:else}
-						<svg class="size-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+						<svg
+							class="size-4 text-zinc-500"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width="1.8"
+							aria-hidden="true"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"
+							/>
 						</svg>
 					{/if}
 					{m.theme_toggle()}
@@ -150,7 +178,14 @@
 							? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
 							: 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'}"
 					>
-						<svg class="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+						<svg
+							class="size-3.5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width="2"
+							aria-hidden="true"
+						>
 							<rect x="3" y="4" width="18" height="12" rx="2" />
 							<path d="M8 20h8M12 16v4" stroke-linecap="round" />
 						</svg>
@@ -164,9 +199,19 @@
 							? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
 							: 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'}"
 					>
-						<svg class="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+						<svg
+							class="size-3.5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width="2"
+							aria-hidden="true"
+						>
 							<circle cx="12" cy="12" r="4" />
-							<path stroke-linecap="round" d="M12 3v1.5M12 19.5V21M3 12h1.5M19.5 12H21M5.6 5.6l1.06 1.06M17.3 17.3l1.1 1.1M5.6 18.4l1.06-1.06M17.3 6.6l1.1-1.1" />
+							<path
+								stroke-linecap="round"
+								d="M12 3v1.5M12 19.5V21M3 12h1.5M19.5 12H21M5.6 5.6l1.06 1.06M17.3 17.3l1.1 1.1M5.6 18.4l1.06-1.06M17.3 6.6l1.1-1.1"
+							/>
 						</svg>
 					</button>
 					<button
@@ -178,17 +223,37 @@
 							? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
 							: 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'}"
 					>
-						<svg class="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+						<svg
+							class="size-3.5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width="2"
+							aria-hidden="true"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"
+							/>
 						</svg>
 					</button>
 				</div>
 			</div>
 
 			<!-- Language row -->
-			<div class="flex items-center justify-between rounded-lg px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300">
+			<div
+				class="flex items-center justify-between rounded-lg px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300"
+			>
 				<span class="flex items-center gap-2.5">
-					<svg class="size-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+					<svg
+						class="size-4 text-zinc-500"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						stroke-width="1.8"
+						aria-hidden="true"
+					>
 						<circle cx="12" cy="12" r="9" />
 						<path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
 					</svg>
@@ -199,7 +264,8 @@
 						<button
 							type="button"
 							onclick={() => setLocale(loc)}
-							class="rounded-md px-2 py-0.5 text-xs font-semibold uppercase transition-colors {activeLocale === loc
+							class="rounded-md px-2 py-0.5 text-xs font-semibold uppercase transition-colors {activeLocale ===
+							loc
 								? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
 								: 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'}"
 						>
@@ -218,8 +284,19 @@
 					role="menuitem"
 					class="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
 				>
-					<svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-						<path stroke-linecap="round" stroke-linejoin="round" d="M15 12H4m0 0 4-4m-4 4 4 4m6-12h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3" />
+					<svg
+						class="size-4"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						stroke-width="1.8"
+						aria-hidden="true"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M15 12H4m0 0 4-4m-4 4 4 4m6-12h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"
+						/>
 					</svg>
 					{m.logout()}
 				</button>

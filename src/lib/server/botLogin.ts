@@ -106,8 +106,7 @@ export async function claimLoginToken(opts: {
 	await db.update(loginTokens).set({ userId: user.id }).where(eq(loginTokens.token, opts.token));
 
 	// Inline-button mesaji at: "Giris yap" butonu complete URL'ine baglar.
-	const baseUrl =
-		(env.PUBLIC_BASE_URL ?? '').replace(/\/$/, '') || 'https://peertest.live';
+	const baseUrl = (env.PUBLIC_BASE_URL ?? '').replace(/\/$/, '') || 'https://peertest.live';
 	const completeUrl = `${baseUrl}/api/auth/bot-login/complete?token=${encodeURIComponent(opts.token)}`;
 	const text =
 		user.locale === 'en'

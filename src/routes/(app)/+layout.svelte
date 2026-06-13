@@ -12,7 +12,7 @@
 
 {#if showBotBanner}
 	<div class="border-b border-amber-200 bg-amber-50 dark:border-amber-500/30 dark:bg-amber-500/10">
-		<div class="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-2 text-sm">
+		<div class="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 py-2 text-sm">
 			<span class="text-amber-800 dark:text-amber-300">
 				{m.connect_bot_banner()}
 			</span>

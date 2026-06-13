@@ -137,13 +137,13 @@
 	<title>{data.app.name} · {m.app_name()}</title>
 </svelte:head>
 
-<section class="mx-auto max-w-5xl px-4 py-6 sm:py-8">
-	<div class="mb-4">
-		<BackLink href="/" label={m.app_detail_back()} />
+<section class="mx-auto max-w-4xl px-4 py-6 sm:py-10">
+	<div class="mb-5">
+		<BackLink href="/apps" label={m.app_detail_back()} />
 	</div>
 
 	<div
-		class="rounded-xl border border-zinc-200 bg-white p-4 sm:p-6 dark:border-zinc-800 dark:bg-zinc-900 {data
+		class="rounded-2xl border border-zinc-200/70 bg-white p-5 shadow-soft sm:p-7 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none {data
 			.app.dim
 			? 'opacity-80'
 			: ''}"
@@ -166,7 +166,7 @@
 
 			<div class="min-w-0 flex-1">
 				<h1
-					class="truncate text-lg font-semibold tracking-tight text-zinc-900 sm:text-xl dark:text-zinc-100"
+					class="truncate text-xl font-semibold tracking-tight text-zinc-900 sm:text-2xl dark:text-zinc-100"
 				>
 					{data.app.name}
 				</h1>
@@ -222,7 +222,7 @@
 			{#if data.access.isOwner}
 				<a
 					href="/my-apps/{data.app.id}"
-					class="rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white hover:bg-tg-500"
+					class="rounded-full bg-tg-600 px-5 py-2 text-sm font-semibold text-white shadow-soft transition-all hover:bg-tg-500 hover:shadow-soft-lg active:scale-95 dark:shadow-none"
 				>
 					{m.my_apps_testers_link()}
 				</a>
@@ -240,7 +240,7 @@
 			{:else if !data.loggedIn}
 				<a
 					href="/login"
-					class="rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white hover:bg-tg-500"
+					class="rounded-full bg-tg-600 px-5 py-2 text-sm font-semibold text-white shadow-soft transition-all hover:bg-tg-500 hover:shadow-soft-lg active:scale-95 dark:shadow-none"
 				>
 					{m.login()}
 				</a>
@@ -248,7 +248,7 @@
 				<button
 					type="button"
 					onclick={openModal}
-					class="inline-flex items-center gap-1.5 rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white hover:bg-tg-500"
+					class="inline-flex items-center gap-1.5 rounded-full bg-tg-600 px-5 py-2 text-sm font-semibold text-white shadow-soft transition-all hover:bg-tg-500 hover:shadow-soft-lg active:scale-95 dark:shadow-none"
 				>
 					{#if hasIncomingTrade}
 						<Icon name="swap" class="size-4" />
@@ -378,11 +378,11 @@
 		}}
 	>
 		<div
-			class="w-full max-w-md rounded-t-2xl border border-zinc-200 bg-white p-5 sm:rounded-xl sm:p-6 dark:border-zinc-800 dark:bg-zinc-900"
+			class="animate-pop-in w-full max-w-md rounded-t-2xl border border-zinc-200 bg-white p-5 sm:rounded-xl sm:p-6 dark:border-zinc-800 dark:bg-zinc-900"
 		>
 			{#if matchedResult && !matchedResult.trade?.matched}
 				<!-- Trade istegi gonderildi, eslesme yok -->
-				<h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+				<h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
 					{m.trade_pending_title()}
 				</h2>
 				<p class="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
@@ -392,16 +392,16 @@
 					<button
 						type="button"
 						onclick={closeModal}
-						class="rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white hover:bg-tg-500"
+						class="rounded-full bg-tg-600 px-5 py-2 text-sm font-semibold text-white shadow-soft transition-all hover:bg-tg-500 hover:shadow-soft-lg active:scale-95 dark:shadow-none"
 					>
 						{m.trade_pending_close()}
 					</button>
 				</div>
 			{:else if step === 'choose'}
-				<h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+				<h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
 					{m.join_dialog_title({ app: data.app.name })}
 				</h2>
-				<p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{m.join_mode_helper()}</p>
+				<p class="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">{m.join_mode_helper()}</p>
 
 				<div class="mt-4 space-y-2.5">
 					<!-- Karsilikli secenegi -->
@@ -479,16 +479,16 @@
 					<button
 						type="button"
 						onclick={next}
-						class="rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white hover:bg-tg-500"
+						class="rounded-full bg-tg-600 px-5 py-2 text-sm font-semibold text-white shadow-soft transition-all hover:bg-tg-500 hover:shadow-soft-lg active:scale-95 dark:shadow-none"
 					>
 						{m.join_continue()}
 					</button>
 				</div>
 			{:else if step === 'pick'}
-				<h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+				<h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
 					{m.join_pick_title()}
 				</h2>
-				<p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{m.join_pick_helper()}</p>
+				<p class="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">{m.join_pick_helper()}</p>
 
 				<div class="mt-4 max-h-60 space-y-2 overflow-y-auto">
 					{#each data.myOwnApps as a (a.id)}
@@ -523,14 +523,26 @@
 					<button
 						type="button"
 						onclick={back}
-						class="rounded-lg border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+						class="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
 					>
-						← {m.join_back()}
+						<svg
+							class="size-4"
+							viewBox="0 0 20 20"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+						>
+							<path d="M12.5 5 7 10l5.5 5" />
+						</svg>
+						{m.join_back()}
 					</button>
 					<button
 						type="button"
 						onclick={next}
-						class="rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white hover:bg-tg-500"
+						class="rounded-full bg-tg-600 px-5 py-2 text-sm font-semibold text-white shadow-soft transition-all hover:bg-tg-500 hover:shadow-soft-lg active:scale-95 dark:shadow-none"
 					>
 						{m.join_continue()}
 					</button>
@@ -563,7 +575,18 @@
 								</div>
 								<div class="truncate font-medium">{data.app.name}</div>
 							</div>
-							<span class="text-base">↔</span>
+							<svg
+								class="size-4 shrink-0 text-tg-500"
+								viewBox="0 0 20 20"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<path d="m7 4-3 3 3 3M4 7h12M13 16l3-3-3-3M16 13H4" />
+							</svg>
 							<div class="min-w-0 flex-1 text-right">
 								<div
 									class="text-[10px] font-medium tracking-wide text-tg-700 uppercase dark:text-tg-300"
@@ -622,16 +645,28 @@
 							type="button"
 							onclick={back}
 							disabled={joining}
-							class="rounded-lg border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+							class="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
 						>
-							← {m.join_back()}
+							<svg
+								class="size-4"
+								viewBox="0 0 20 20"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<path d="M12.5 5 7 10l5.5 5" />
+							</svg>
+							{m.join_back()}
 						</button>
 					{/if}
 					<button
 						type="button"
 						onclick={confirmJoin}
 						disabled={joining}
-						class="rounded-lg bg-tg-600 px-4 py-2 text-sm font-medium text-white hover:bg-tg-500 disabled:opacity-50"
+						class="rounded-full bg-tg-600 px-5 py-2 text-sm font-semibold text-white shadow-soft transition-all hover:bg-tg-500 hover:shadow-soft-lg active:scale-95 disabled:opacity-50 dark:shadow-none"
 					>
 						{joining
 							? m.join_cta_pending()
@@ -655,12 +690,12 @@
 		}}
 	>
 		<div
-			class="w-full max-w-md rounded-t-2xl border border-zinc-200 bg-white p-5 sm:rounded-xl sm:p-6 dark:border-zinc-800 dark:bg-zinc-900"
+			class="animate-pop-in w-full max-w-md rounded-t-2xl border border-zinc-200 bg-white p-5 sm:rounded-xl sm:p-6 dark:border-zinc-800 dark:bg-zinc-900"
 		>
-			<h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+			<h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
 				{m.app_report_title({ app: data.app.name })}
 			</h2>
-			<p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{m.app_report_desc()}</p>
+			<p class="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">{m.app_report_desc()}</p>
 
 			<form
 				method="POST"
